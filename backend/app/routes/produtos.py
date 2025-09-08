@@ -1,7 +1,14 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
+from sqlalchemy.orm import Session
+from database.connect import get_db
+from database.models import Produto
 
 router = APIRouter(prefix="/produtos", tags=["produtos"])
 
 @router.get("/")
-def listar_produtos():
-    return [{"id": 1, "nome": "Notebook", "preco": 3500.00}]
+def listar_produtos(db: Session = Depends(get_db)):
+    produtos = db.query(Produto).all()
+    return [
+        {"id": p.id, "nome": p.nome, "descricao": p.descricao, "preco": float(p.preco), "estoque": p.estoque}
+        for p in produtos
+    ]
