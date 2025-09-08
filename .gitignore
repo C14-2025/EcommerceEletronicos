@@ -1,4 +1,109 @@
-venv/
+# === Arquivos de cache do Python ===
 __pycache__/
+*.py[cod]
+*$py.class
+
+# === Ambientes virtuais ===
+.venv/
+venv/
+env/
+ENV/
+.conda/
+.venv*/
+
+# === Distribuição / pacotes ===
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# === Logs e temporários ===
+*.log
+*.pot
 *.pyc
+*.pyo
+*.pyd
+*.swp
+*.swo
+*.bak
+*.tmp
+*.coverage
+*.cover
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.prof
+*.dat
+*.out
+*.pid
+
+# === Testes ===
+.tox/
+.nox/
+.pytest_cache/
+.coverage
+coverage_html_report/
+
+# === IDEs / Editores ===
+.vscode/
+.idea/
+.spyderproject
+.spyproject
+.ropeproject
+*.sublime-project
+*.sublime-workspace
+
+# === Jupyter / IPython ===
+.ipynb_checkpoints
+profile_default/
+ipython_config.py
+
+# === mypy / lint / type-check ===
+.mypy_cache/
+.dmypy.json
+dmypy.json
+.pyre/
+.pytype/
+
+# === Django / Flask / FastAPI ===
+*.mo
+*.pot
+*.db
+*.sqlite3
+instance/
+.webassets-cache
+*.log
+
+# === Padrões de segurança ===
 .env
+.env.*
+*.pem
+*.key
+*.crt
+*.p12
+
+# === Docker ===
+*.pid
+*.seed
+*.pid.lock
+
+# === VSCode / PyCharm settings ===
+*.code-workspace
+
+# === Outros ===
+.DS_Store
+Thumbs.db
