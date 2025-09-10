@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
-from database.connect import get_db
-from database.models import Pagamento
+from app.database.connect import get_db
+from app.database.models import Pagamento
 
 router = APIRouter(prefix="/pagamentos", tags=["pagamentos"])
 

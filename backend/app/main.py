@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from app.routes import usuarios, produtos, pedidos, pagamentos
-from database.connect import engine, Base
+from app.database.connect import engine, Base
 
 # Cria tabelas no banco caso não existam
 Base.metadata.create_all(bind=engine)
