@@ -1,12 +1,56 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
+from typing import List
+
 from app.database.connect import get_db
 from app.database.models import Usuario
+from app.schemas.usuario import UsuarioCreate, UsuarioUpdate, UsuarioOut
 
 router = APIRouter(prefix="/usuarios", tags=["usuarios"])
 
-@router.get("/")
-def listar_usuarios(db: Session = Depends(get_db)):
-    usuarios = db.query(Usuario).all()
-    return [{"id": u.id, "nome": u.nome, "email": u.email, "telefone": u.telefone} for u in usuarios]
 
+@router.get("/", response_model=List[UsuarioOut])
+def listar_usuarios(db: Session = Depends(get_db)):
+    return db.query(Usuario).all()
+
+
+@router.get("/{usuario_id}", response_model=UsuarioOut)
+def buscar_usuario(usuario_id: int, db: Session = Depends(get_db)):
+    usuario = db.query(Usuario).filter(Usuario.id == usuario_id).first()
+    if not usuario:
+        raise HTTPException(status_code=404, detail="Usuário não encontrado")
+    return usuario
+
+
+@router.post("/", response_model=UsuarioOut, status_code=201)
+def criar_usuario(dados: UsuarioCreate, db: Session = Depends(get_db)):
+    novo = Usuario(**dados.dict())
+    db.add(novo)
+    db.commit()
+    db.refresh(novo)
+    return novo
+
+
+@router.put("/{usuario_id}", response_model=UsuarioOut)
+def atualizar_usuario(usuario_id: int, dados: UsuarioUpdate, db: Session = Depends(get_db)):
+    usuario = db.query(Usuario).filter(Usuario.id == usuario_id).first()
+    if not usuario:
+        raise HTTPException(status_code=404, detail="Usuário não encontrado")
+
+    for campo, valor in dados.dict(exclude_unset=True).items():
+        setattr(usuario, campo, valor)
+
+    db.commit()
+    db.refresh(usuario)
+    return usuario
+
+
+@router.delete("/{usuario_id}", status_code=204)
+def deletar_usuario(usuario_id: int, db: Session = Depends(get_db)):
+    usuario = db.query(Usuario).filter(Usuario.id == usuario_id).first()
+    if not usuario:
+        raise HTTPException(status_code=404, detail="Usuário não encontrado")
+
+    db.delete(usuario)
+    db.commit()
+    return None
