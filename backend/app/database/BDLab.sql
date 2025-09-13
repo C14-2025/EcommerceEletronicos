@@ -1,3 +1,10 @@
+DROP TABLE IF EXISTS pedido_itens CASCADE;
+DROP TABLE IF EXISTS pagamentos CASCADE;
+DROP TABLE IF EXISTS pedidos CASCADE;
+DROP TABLE IF EXISTS produtos CASCADE;
+DROP TABLE IF EXISTS categorias CASCADE;
+DROP TABLE IF EXISTS enderecos CASCADE;
+DROP TABLE IF EXISTS usuarios CASCADE;
 -- ==========================
 -- Tabela de Usuários
 -- ==========================

@@ -1,5 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
+from sqlalchemy.exc import IntegrityError
+
 from typing import List
 
 from app.database.connect import get_db
@@ -24,11 +26,15 @@ def buscar_usuario(usuario_id: int, db: Session = Depends(get_db)):
 
 @router.post("/", response_model=UsuarioOut, status_code=201)
 def criar_usuario(dados: UsuarioCreate, db: Session = Depends(get_db)):
-    novo = Usuario(**dados.dict())
+    novo = Usuario(**dados.model_dump())  # se estiver no Pydantic v2
     db.add(novo)
-    db.commit()
-    db.refresh(novo)
-    return novo
+    try:
+        db.commit()
+        db.refresh(novo)
+    except IntegrityError:
+        db.rollback()
+        raise HTTPException(status_code=400, detail="Email já cadastrado")
+    return novo 
 
 
 @router.put("/{usuario_id}", response_model=UsuarioOut)
