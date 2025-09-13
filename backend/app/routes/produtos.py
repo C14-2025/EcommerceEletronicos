@@ -53,4 +53,8 @@ def deletar_produto(produto_id: int, db: Session = Depends(get_db)):
 
     db.delete(produto)
     db.commit()
+<<<<<<< HEAD
     return None
+=======
+    return None
+>>>>>>> origin/main
