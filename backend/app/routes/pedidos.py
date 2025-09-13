@@ -70,8 +70,4 @@ def deletar_pedido(pedido_id: int, db: Session = Depends(get_db)):
 
     db.delete(pedido)
     db.commit()
-<<<<<<< HEAD
     return None
-=======
-    return None
->>>>>>> origin/main
