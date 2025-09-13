@@ -2,6 +2,7 @@
 CREATE TABLE usuarios (
     id varchar(30) primary key,
     nome VARCHAR(100) NOT NULL,
+    cpf VARCHAR(50) NOT NULL,
     email VARCHAR(100) UNIQUE NOT NULL,
     senha VARCHAR(255) NOT NULL,
     telefone VARCHAR(20),
@@ -60,6 +61,11 @@ CREATE TABLE pagamentos (
     data_pagamento TIMESTAMP
 );
 
-
-
-
+CREATE TABLE Notas (
+    id SERIAL PRIMARY KEY,
+    produto_id INT REFERENCES produtos(id),
+    usuario_id VARCHAR(30) REFERENCES usuarios(id),
+    nota INT CHECK (nota BETWEEN 1 AND 5),
+    comentario TEXT,
+    data_avaliacao TIMESTAMP DEFAULT NOW()
+);

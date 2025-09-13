@@ -6,11 +6,11 @@ from .connect import Base
 class Usuario(Base):
     __tablename__ = "usuarios"
 
-    id = Column(String(30), primary_key=True, index=True)
-    nome = Column(String(100), nullable=False)
-    email = Column(String(100), unique=True, nullable=False)
-    senha = Column(String(255), nullable=False)
-    telefone = Column(String(20))
+    id = Column(Integer, primary_key=True, index=True, autoincrement=True)  # 🔑 importante
+    nome = Column(String, nullable=False)
+    email = Column(String, unique=True, nullable=False, index=True)
+    senha = Column(String, nullable=False)
+    telefone = Column(String, nullable=True)
 
     pedidos = relationship("Pedido", back_populates="usuario")
 
