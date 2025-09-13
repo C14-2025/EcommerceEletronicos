@@ -11,6 +11,7 @@ DROP TABLE IF EXISTS usuarios CASCADE;
 CREATE TABLE usuarios (
     id SERIAL PRIMARY KEY,
     nome VARCHAR(100) NOT NULL,
+    cpf VARCHAR(50) NOT NULL,
     email VARCHAR(100) UNIQUE NOT NULL,
     senha VARCHAR(255) NOT NULL,  -- armazenar hash
     telefone VARCHAR(20)
