@@ -36,7 +36,7 @@ def test_criar_usuario_sem_senha():
     assert response.status_code == 422
 
 # Teste para Buscar usuário inexistente
-    def test_buscar_usuario_inexistente():
+ def test_buscar_usuario_inexistente():
     
     response = client.get("/usuarios/9999")
 
