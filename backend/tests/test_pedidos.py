@@ -58,3 +58,39 @@ def test_buscar_pedido_por_id():
     data = response.json()
     assert data["id"] == 1
     assert data["usuario_id"] == 3
+
+# Buscar pedido inexistente
+def test_buscar_pedido_inexistente():
+    response = client.get("/pedidos/999")
+    assert response.status_code == 404
+    assert response.json()["detail"] == "Pedido não encontrado"
+
+
+# Atualizar pedido existente
+def test_atualizar_pedido():
+    client.post("/pedidos/", json={
+        "usuario_id": 4,
+        "endereco_id": 4,
+        "status": "pendente"
+    })
+
+    response = client.put("/pedidos/1", json={"status": "enviado"})
+    assert response.status_code == 200
+    data = response.json()
+    assert data["status"] == "enviado"
+
+
+# Deletar pedido existente
+def test_deletar_pedido():
+    client.post("/pedidos/", json={
+        "usuario_id": 5,
+        "endereco_id": 5,
+        "status": "pendente"
+    })
+
+    response = client.delete("/pedidos/1")
+    assert response.status_code == 204
+
+    # confirma que foi excluído
+    response = client.get("/pedidos/1")
+    assert response.status_code==404
