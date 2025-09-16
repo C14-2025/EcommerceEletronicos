@@ -27,8 +27,5 @@ class PedidoOut(BaseModel):
     data_pedido: datetime
     id: int
 
-<<<<<<< HEAD
     model_config = ConfigDict(from_attributes=True)
-=======
-    model_config = ConfigDict(from_attributes=True)
->>>>>>> origin/main
+

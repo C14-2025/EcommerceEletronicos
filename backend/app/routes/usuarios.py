@@ -59,8 +59,5 @@ def deletar_usuario(usuario_id: int, db: Session = Depends(get_db)):
 
     db.delete(usuario)
     db.commit()
-<<<<<<< HEAD
     return None
-=======
-    return None
->>>>>>> origin/main
+

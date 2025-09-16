@@ -29,8 +29,4 @@ class ProdutoOut(BaseModel):
 
     model_config = ConfigDict(from_attributes=True)
     
-<<<<<<< HEAD
     # Base comum para Pedido
-=======
-    # Base comum para Pedido
->>>>>>> origin/main

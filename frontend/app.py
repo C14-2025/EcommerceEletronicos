@@ -7,7 +7,7 @@ col1, col2, col3 = st.columns([6, 1, 1])
 with col3:
     
     if st.button("Entrar"):
-        st.switch_page("pages/Entrar.py")  
+        st.switch_page("pages/5_Entrar.py")  
 
 st.title("🖥️ Electronic Ecommerce")
 st.write("Bem-vindo ao sistema de Ecommerce!")
