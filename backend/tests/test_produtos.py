@@ -53,8 +53,4 @@ def test_listar_produtos():
 def test_buscar_produto_inexistente():
     response = client.get("/produtos/999")  # id que não existe
     assert response.status_code == 404
-<<<<<<< HEAD
     assert response.json()["detail"] == "Produto não encontrado"
-=======
-    assert response.json()["detail"] == "Produto não encontrado"
->>>>>>> origin/main
