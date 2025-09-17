@@ -29,4 +29,3 @@ class ProdutoOut(BaseModel):
 
     model_config = ConfigDict(from_attributes=True)
     
-    # Base comum para Pedido

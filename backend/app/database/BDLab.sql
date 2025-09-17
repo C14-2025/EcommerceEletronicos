@@ -81,7 +81,6 @@ CREATE TABLE pagamentos (
     status VARCHAR(50) DEFAULT 'aguardando',
     data_pagamento TIMESTAMP
 );
-<<<<<<< HEAD
 
 CREATE TABLE Notas (
     id SERIAL PRIMARY KEY,
@@ -91,5 +90,3 @@ CREATE TABLE Notas (
     comentario TEXT,
     data_avaliacao TIMESTAMP DEFAULT NOW()
 );
-=======
->>>>>>> origin/main
