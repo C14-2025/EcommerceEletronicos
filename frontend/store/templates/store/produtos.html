@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>📦 Produtos disponíveis</h1>
+
+{% if produtos.error %}
+    <p style="color:red">{{ produtos.error }}</p>
+{% else %}
+    <ul>
+    {% for p in produtos %}
+        <li>{{ p.nome }} - R$ {{ p.preco }}</li>
+    {% endfor %}
+    </ul>
+{% endif %}
+{% endblock %}

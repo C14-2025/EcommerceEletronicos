@@ -21,3 +21,39 @@ def test_criar_usuario_duplicado():
     })
     assert response2.status_code == 400
     assert response2.json()["detail"] == "Email já cadastrado"
+
+
+# Teste para Criar usuário sem campo obrigatório
+def test_criar_usuario_sem_senha():
+    # Tenta criar usuário sem senha
+    response = client.post("/usuarios/", json={
+        "nome": "SemSenha",
+        "email": "semsenha@email.com",
+        "telefone": "11988888888"
+    })
+
+    # Deve retornar erro de validação
+    assert response.status_code == 422
+
+# Teste para Buscar usuário inexistente
+ def test_buscar_usuario_inexistente():
+    
+    response = client.get("/usuarios/9999")
+
+    # Deve retornar não encontrado
+    assert response.status_code == 404
+    assert response.json()["detail"] == "Usuário não encontrado"
+
+
+# Criar usuário com email inválido
+def test_criar_usuario_email_invalido():
+    # Tenta criar usuário com email mal formado
+    response = client.post("/usuarios/", json={
+        "nome": "Teste",
+        "email": "email_invalido",
+        "senha": "123456",
+        "telefone": "11999999999"
+    })
+
+    # Deve falhar na validação
+    assert response.status_code == 422

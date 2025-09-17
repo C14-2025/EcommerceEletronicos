@@ -173,4 +173,8 @@ O projeto:
 ✔️ Suíte de testes unitários para estabilidade da API  
 ✔️ Estrutura modular, facilitando manutenção e expansão futura  
 
+<<<<<<< HEAD
 💡 Contribuições são bem-vindas! Abra uma **issue** ou envie um **pull request**.
+=======
+💡 Contribuições são bem-vindas! Abra uma **issue** ou envie um **pull request**.
+>>>>>>> origin/main
