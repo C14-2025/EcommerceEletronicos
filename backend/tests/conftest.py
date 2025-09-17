@@ -13,4 +13,8 @@ def limpar_banco():
     db.execute(text("TRUNCATE pedidos RESTART IDENTITY CASCADE;"))
     db.commit()
     yield
+<<<<<<< HEAD
     db.close()
+=======
+    db.close()
+>>>>>>> origin/main

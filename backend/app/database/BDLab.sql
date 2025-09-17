@@ -81,3 +81,15 @@ CREATE TABLE pagamentos (
     status VARCHAR(50) DEFAULT 'aguardando',
     data_pagamento TIMESTAMP
 );
+<<<<<<< HEAD
+
+CREATE TABLE Notas (
+    id SERIAL PRIMARY KEY,
+    produto_id INT REFERENCES produtos(id),
+    usuario_id VARCHAR(30) REFERENCES usuarios(id),
+    nota INT CHECK (nota BETWEEN 1 AND 5),
+    comentario TEXT,
+    data_avaliacao TIMESTAMP DEFAULT NOW()
+);
+=======
+>>>>>>> origin/main

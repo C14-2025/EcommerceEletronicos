@@ -1,5 +1,5 @@
-streamlit>=1.38.0
-requests>=2.32.3
-pandas>=2.2.2
-plotly>=5.23.0
-python-dotenv>=1.0.1
+django==5.0.6
+requests==2.32.3
+django-crispy-forms==2.1        # forms bonitos
+crispy-bootstrap5==2024.2       # Bootstrap 5 para Django
+django-tailwind==3.6.0
