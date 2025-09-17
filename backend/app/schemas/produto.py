@@ -28,4 +28,3 @@ class ProdutoOut(BaseModel):
     estoque: int
 
     model_config = ConfigDict(from_attributes=True)
-    
