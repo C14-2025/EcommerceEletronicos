@@ -16,9 +16,11 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from store import views  # importa a view da home
 
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("store/", include("store.urls")),  # inclui rotas do store
+    path('', views.home, name='home'),  # página principal
     path("users/", include("users.urls")),  # se tiver app users
 ]

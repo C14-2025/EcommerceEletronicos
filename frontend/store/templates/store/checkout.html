@@ -1,0 +1,21 @@
+{% extends "store/base.html" %}
+
+{% block content %}
+  <h1>Finalizar Compra</h1>
+
+  <p>Revise seus itens antes de confirmar a compra:</p>
+
+  <!-- Exemplo de lista de itens -->
+  <ul>
+    <li>Produto A - R$ 50,00</li>
+    <li>Produto B - R$ 30,00</li>
+  </ul>
+
+  <p>Total: R$ 80,00</p>
+
+  <!-- Futuramente isso pode virar um formulário -->
+  <form method="post">
+    {% csrf_token %}
+    <button type="submit">Confirmar Pedido</button>
+  </form>
+{% endblock %}

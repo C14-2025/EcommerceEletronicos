@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Ecommerce</title>
+</head>
+<body>
+    <nav>
+        <a href="/">Home</a>
+        {% if user.is_authenticated %}
+            <span>Bem-vindo, {{ user.username }}</span>
+            <a href="{% url 'logout' %}">Sair</a>
+        {% else %}
+            <a href="{% url 'login' %}">Entrar</a>
+            <a href="{% url 'signup' %}">Cadastrar</a>
+        {% endif %}
+    </nav>
+
+    <hr>
+    {% block content %}{% endblock %}
+</body>
+</html>

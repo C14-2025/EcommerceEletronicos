@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h1>🖥️ Produtos disponíveis</h1>
+
+<form method="get" action="">
+    <input type="text" name="q" placeholder="Buscar produto...">
+    <button type="submit">Buscar</button>
+</form>
+
+<div style="display: flex; flex-wrap: wrap; gap: 20px;">
+    {% for produto in produtos %}
+    <div style="border: 1px solid #ddd; padding: 15px; width: 250px;">
+        {% if produto.imagem %}
+            <img src="{{ produto.imagem.url }}" alt="{{ produto.nome }}" style="width:100%;">
+        {% endif %}
+        <h3>{{ produto.nome }}</h3>
+        <p>💰 R$ {{ produto.preco }}</p>
+        <p>{{ produto.descricao|truncatewords:20 }}</p>
+        <button>Adicionar ao carrinho</button>
+    </div>
+    {% empty %}
+        <p>Nenhum produto encontrado.</p>
+    {% endfor %}
+</div>
+
+{% endblock %}
+
