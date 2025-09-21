@@ -15,7 +15,8 @@ engine = create_engine(DATABASE_URL, echo=True)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 # Base para os models (se depois quiser usar ORM com classes Python)
-Base = DeclarativeBase()
+class Base(DeclarativeBase):
+    pass
 
 # Dependência para FastAPI (injeção em rotas)
 def get_db():

@@ -1,21 +1,24 @@
-{% extends "store/base.html" %}
-
+{% extends "base.html" %}
 {% block content %}
-  <h1>Finalizar Compra</h1>
+<h1 class="text-2xl font-bold mb-4">Finalizar Compra</h1>
+<p class="mb-4 text-gray-700">Revise seus itens antes de confirmar a compra:</p>
 
-  <p>Revise seus itens antes de confirmar a compra:</p>
+<ul class="mb-4 space-y-2">
+    <li class="bg-white p-4 rounded shadow flex justify-between">
+        Produto A <span class="font-semibold">R$ 50,00</span>
+    </li>
+    <li class="bg-white p-4 rounded shadow flex justify-between">
+        Produto B <span class="font-semibold">R$ 30,00</span>
+    </li>
+</ul>
 
-  <!-- Exemplo de lista de itens -->
-  <ul>
-    <li>Produto A - R$ 50,00</li>
-    <li>Produto B - R$ 30,00</li>
-  </ul>
+<p class="text-lg font-bold mb-6">Total: R$ 80,00</p>
 
-  <p>Total: R$ 80,00</p>
-
-  <!-- Futuramente isso pode virar um formulário -->
-  <form method="post">
+<form method="post" class="bg-white p-6 rounded shadow">
     {% csrf_token %}
-    <button type="submit">Confirmar Pedido</button>
-  </form>
+    <button type="submit"
+        class="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded font-semibold">
+        Confirmar Pedido
+    </button>
+</form>
 {% endblock %}
