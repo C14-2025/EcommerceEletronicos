@@ -31,7 +31,7 @@ class Pedido(Base):
     __tablename__ = "pedidos"
 
     id = Column(Integer, primary_key=True, index=True, autoincrement=True)
-    usuario_id = Column(String(30), ForeignKey("usuarios.id"))
+    usuario_id = Column(Integer, ForeignKey("usuarios.id"))
     endereco_id = Column(Integer)  # simplificação (pode criar model Endereco depois)
     data_pedido = Column(TIMESTAMP)
     status = Column(String(50), default="pendente")

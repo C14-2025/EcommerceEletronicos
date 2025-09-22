@@ -1,14 +1,18 @@
 {% extends "base.html" %}
 {% block content %}
-<h1>📦 Produtos disponíveis</h1>
+<h1 class="text-2xl font-bold mb-6">📦 Produtos disponíveis</h1>
 
 {% if produtos.error %}
-    <p style="color:red">{{ produtos.error }}</p>
+    <p class="text-red-500 font-semibold">{{ produtos.error }}</p>
 {% else %}
-    <ul>
+    <ul class="space-y-2">
     {% for p in produtos %}
-        <li>{{ p.nome }} - R$ {{ p.preco }}</li>
+        <li class="bg-white border rounded shadow p-4 flex justify-between">
+            {{ p.nome }}
+            <span class="text-green-600 font-bold">R$ {{ p.preco }}</span>
+        </li>
     {% endfor %}
     </ul>
 {% endif %}
 {% endblock %}
+
