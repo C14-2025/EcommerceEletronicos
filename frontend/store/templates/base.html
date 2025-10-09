@@ -5,22 +5,34 @@
     <title>Ecommerce</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-gray-100 text-gray-800">
-    <!-- Navbar -->
-    <nav class="bg-white shadow-md px-6 py-4 flex justify-between items-center">
-        <a href="/" class="text-xl font-bold text-blue-600 hover:text-blue-800">Ecommerce</a>
-        <div class="flex gap-4">
+<body class="bg-gray-50 text-gray-800">
+    <nav class="bg-blue-600 text-white p-4 flex justify-between items-center shadow">
+        <a href="/" class="font-bold text-lg">🛍️ Ecommerce</a>
+
+        <div class="space-x-4">
             {% if user.is_authenticated %}
-                <span class="text-gray-700">Bem-vindo, {{ user.username }}</span>
-                <a href="{% url 'logout' %}" class="text-red-500 hover:underline">Sair</a>
+                <span>Bem-vindo, {{ user.username }}</span>
+                <a href="{% url 'logout' %}" class="hover:underline">Sair</a>
             {% else %}
-                <a href="{% url 'login' %}" class="text-blue-600 hover:underline">Entrar</a>
-                <a href="{% url 'signup' %}" class="text-green-600 hover:underline">Cadastrar</a>
+                <a href="{% url 'login' %}" class="hover:underline">Entrar</a>
+                <a href="{% url 'signup' %}" class="hover:underline">Cadastrar</a>
             {% endif %}
         </div>
     </nav>
 
-    <main class="container mx-auto px-6 py-8">
+    <hr class="border-gray-200">
+
+    {% if messages %}
+      <div class="max-w-xl mx-auto mt-4">
+        {% for message in messages %}
+          <div class="p-3 mb-2 rounded text-white {% if message.tags == 'success' %}bg-green-600{% else %}bg-red-600{% endif %}">
+            {{ message }}
+          </div>
+        {% endfor %}
+      </div>
+    {% endif %}
+
+    <main class="p-6">
         {% block content %}{% endblock %}
     </main>
 </body>
