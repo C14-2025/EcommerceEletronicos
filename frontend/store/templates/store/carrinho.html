@@ -1,7 +1,157 @@
 {% extends "base.html" %}
+{% load static %}
+
 {% block content %}
-<h1 class="text-2xl font-bold mb-4">🛒 Seu carrinho</h1>
-<div class="bg-white p-6 rounded-lg shadow">
-    <p class="text-gray-600">Por enquanto está vazio...</p>
+
+<div class="cart-page-wrapper">
+    
+    <div class="cart-header-steps">
+        <ul>
+            <li class="active"><span>1. Carrinho</span></li>
+            <li><span>2. Endereço</span></li>
+            <li><span>3. Entrega</span></li>
+            <li><span>4. Pagamento</span></li>
+            <li><span>5. Confirmação</span></li>
+            <li><span>6. Concluído</span></li>
+        </ul>
+    </div>
+
+    <div class="cart-content-area">
+        
+        <div class="main-cart-section">
+            
+            <div class="alert-message">
+                Aproveite o frete grátis em pedidos acima de R$ 500,00!
+            </div>
+
+            <div class="product-section">
+                
+                <div class="section-header">
+                    <h3>PRODUTOS ADICIONADOS (2 Itens)</h3>
+                    <button class="remove-all-button">REMOVER TODOS</button>
+                </div>
+
+                <div class="product-card" data-product-id="123">
+                    <div class="product-info">
+                        <img src="{% static 'images/notebook.jpg' %}" alt="Notebook Gamer X" class="product-image">
+                        <div class="product-details">
+                            <h4 class="product-name">Notebook Gamer Elite G9, Core i7, 16GB RAM, SSD 1TB, 15.6" QHD</h4>
+                            <p class="product-seller">Vendido e entregue por: <span class="seller-name">EcommerceEletronicos</span></p>
+                            <p class="price-old">Preço Parcelado: <span class="old-value">R$ 5.999,00</span></p>
+                            <p class="coupon-tag">OFERTA ESPECIAL</p>
+                        </div>
+                    </div>
+                    <div class="product-actions">
+                        <p class="price-info">Preço à vista no Pix/Boleto:</p>
+                        <span class="product-price">R$ 5.399,10</span>
+                        <div class="quantity-control">
+                            <button class="quantity-btn decrease-qty" data-action="decrement" data-item-id="123">-</button>
+                            <span class="quantity-display">1</span>
+                            <button class="quantity-btn increase-qty" data-action="increment" data-item-id="123">+</button>
+                        </div>
+                        <button class="remove-item-btn" data-action="remove" data-item-id="123">Remover</button>
+                    </div>
+                </div>
+                
+                <div class="service-options">
+                    <div class="service-header">
+                        <span class="service-icon"></span>
+                        <h4>SERVIÇOS E GARANTIAS</h4>
+                        <span class="toggle-icon">^</span>
+                    </div>
+                    <div class="service-list">
+                        <label class="service-item">
+                            <input type="radio" name="service-product-123" value="no-guarantee" checked>
+                            Sem Garantia
+                        </label>
+                        <label class="service-item">
+                            <input type="radio" name="service-product-123" value="12-months-guarantee">
+                            12 Meses de Garantia Estendida
+                            <span class="service-price">R$ 299,00</span>
+                        </label>
+                        <label class="service-item">
+                            <input type="radio" name="seguro-product-123" value="sem-seguro" checked>
+                            Sem Seguro
+                        </label>
+                        <label class="service-item">
+                            <input type="radio" name="seguro-product-123" value="roubo-furto">
+                            Seguro contra Roubo e Furto (12 Meses)
+                            <span class="service-price">R$ 150,00</span>
+                        </label>
+                    </div>
+                    <div class="service-subtotal">
+                        <span>Subtotal serviços: R$ 0,00</span>
+                    </div>
+                </div>
+                
+            </div>
+            
+            <div class="product-section">
+                <div class="product-card" data-product-id="456">
+                    <div class="product-info">
+                        <img src="{% static 'images/mouse.jpg' %}" alt="Mouse Gamer RGB" class="product-image">
+                        <div class="product-details">
+                            <h4 class="product-name">Mouse Gamer HyperSense RGB, 16000 DPI</h4>
+                            <p class="product-seller">Vendido e entregue por: <span class="seller-name">Parceiro Tech</span></p>
+                            <p class="offer-tag">PARCEIRO</p>
+                        </div>
+                    </div>
+                    <div class="product-actions">
+                        <span class="product-price">R$ 189,90</span>
+                        <div class="quantity-control">
+                            <button class="quantity-btn decrease-qty" data-action="decrement" data-item-id="456">-</button>
+                            <span class="quantity-display">2</span>
+                            <button class="quantity-btn increase-qty" data-action="increment" data-item-id="456">+</button>
+                        </div>
+                        <button class="remove-item-btn" data-action="remove" data-item-id="456">Remover</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grand-total-services">
+                <span>Total de Serviços e Garantias:</span>
+                <span class="total-value">R$ 0,00</span>
+            </div>
+            
+        </div>
+
+        <div class="cart-sidebar-summary">
+            <div class="summary-box">
+                <h3>RESUMO DO PEDIDO</h3>
+                
+                <div class="summary-line">
+                    <span>Valor dos Produtos:</span>
+                    <span class="summary-value">R$ 5.779,00</span>
+                </div>
+                <div class="summary-line">
+                    <span>Serviços Adicionais:</span>
+                    <span class="summary-value">R$ 0,00</span>
+                </div>
+                <div class="summary-line">
+                    <span>Frete:</span>
+                    <span class="summary-value">A calcular</span>
+                </div>
+                
+                <div class="summary-separator"></div>
+                
+                <div class="summary-line total-line">
+                    <span>Total a Prazo:</span>
+                    <span class="summary-value">R$ 5.779,00</span>
+                </div>
+                <p class="installments">(em até 10x de R$ 577,90 sem juros)</p>
+                
+                <div class="summary-pix-info">
+                    <p>Valor à vista com Desconto:</p>
+                    <p class="pix-price">R$ 5.178,50</p>
+                    <p class="pix-economy">(economize <span class="economy-value">R$ 600,50</span>)</p>
+                </div>
+                
+                <button class="checkout-button primary">FINALIZAR COMPRA</button>
+                <button class="checkout-button secondary">CONTINUAR COMPRANDO</button>
+            </div>
+        </div>
+        
+    </div>
 </div>
-{% endblock %}
+
+{% endblock content %}
