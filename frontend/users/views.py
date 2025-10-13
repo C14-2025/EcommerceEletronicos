@@ -1,6 +1,7 @@
 # users/views.py
 from django.shortcuts import render
 from django.contrib import messages
+from django.http import HttpResponse
 from .forms import SignupForm
 import requests
 
@@ -24,3 +25,9 @@ def signup_view(request):
         form = SignupForm()
 
     return render(request, "users/signup.html", {"form": form})
+
+def login_view(request):
+    return render(request, "users/login.html")
+
+def logout_view(request):
+    return HttpResponse("Logout (placeholder)")
