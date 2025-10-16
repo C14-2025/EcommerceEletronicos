@@ -10,14 +10,15 @@
         <a href="/" class="font-bold text-lg">🛍️ Ecommerce</a>
 
         <div class="space-x-4">
-            {% if user.is_authenticated %}
-                <span>Bem-vindo, {{ user.username }}</span>
-                <a href="{% url 'logout' %}" class="hover:underline">Sair</a>
-            {% else %}
-                <a href="{% url 'login' %}" class="hover:underline">Entrar</a>
-                <a href="{% url 'signup' %}" class="hover:underline">Cadastrar</a>
-            {% endif %}
+          {% if request.session.usuario %}
+            <span>Bem-vindo, {{ request.session.usuario.nome }}</span>
+            <a href="{% url 'logout' %}" class="hover:underline">Sair</a>
+          {% else %}
+            <a href="{% url 'login' %}" class="hover:underline">Entrar</a>
+            <a href="{% url 'signup' %}" class="hover:underline">Cadastrar</a>
+          {% endif %}
         </div>
+
     </nav>
 
     <hr class="border-gray-200">
