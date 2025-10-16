@@ -29,7 +29,6 @@ jobs:
           pip install -r requirements.txt
       - name: Build Django frontend
         run: |
-          python manage.py collectstatic --noinput
           python manage.py check
 
   test_frontend:
