@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from app.routes import usuarios, produtos, pedidos, pagamentos
+from app.routes import usuarios, produtos, pedidos, pagamentos, auth
 from app.database.connect import engine, Base
 
 # Cria tabelas no banco caso não existam
@@ -12,6 +12,8 @@ app.include_router(usuarios.router)
 app.include_router(produtos.router)
 app.include_router(pedidos.router)
 app.include_router(pagamentos.router)
+app.include_router(auth.router)
+
 
 @app.get("/")
 def root():
