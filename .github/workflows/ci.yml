@@ -50,3 +50,31 @@ jobs:
       - name: Run frontend tests
         run: python manage.py test
 
+  # ===============================
+  # NOTIFICAÇÃO
+  # ===============================
+
+  notify:
+      name: Notify (send email)
+      needs: [test_frontend]
+      runs-on: ubuntu-latest
+      steps:
+        - name: Checkout code
+          uses: actions/checkout@v4
+ 
+        - name: Setup Python
+          uses: actions/setup-python@v4
+          with:
+            python-version: '3.12'
+ 
+        - name: Install requirements for notification script
+          run: |
+            python -m pip install --upgrade pip
+            pip install wheel
+ 
+        - name: Run notification script
+          env:
+            RECIPIENT: ${{ secrets.EMAIL_USER }}   
+            PIPELINE_MSG: "Pipeline executado!"
+          run: |
+            python scripts/send_email.py
