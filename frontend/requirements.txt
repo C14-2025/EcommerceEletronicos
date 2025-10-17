@@ -1,5 +1,8 @@
 django==5.0.6
 requests==2.32.3
-django-crispy-forms==2.1        # forms bonitos
-crispy-bootstrap5==2024.2       # Bootstrap 5 para Django
+django-crispy-forms==2.1
+crispy-bootstrap5==2024.2
 django-tailwind==3.6.0
+pytest==8.2.2
+pytest-django==4.8.0
+Pillow==10.3.0
