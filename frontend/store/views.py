@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib import messages
 from .utils.api import get
 from django.views.decorators.http import require_POST
+import requests
 
 def produtos(request):
     produtos = get("/produtos/")

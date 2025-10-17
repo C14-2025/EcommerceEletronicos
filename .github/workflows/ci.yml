@@ -47,7 +47,6 @@ jobs:
       - name: Install dependencies
         run: |
           pip install -r requirements.txt
-          pip install pytest
       - name: Run frontend tests
-        run: pytest . -v --disable-warnings
+        run: python manage.py test
 
