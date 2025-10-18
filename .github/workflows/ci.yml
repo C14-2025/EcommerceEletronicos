@@ -78,3 +78,15 @@ jobs:
             PIPELINE_MSG: "Pipeline executado!"
           run: |
             python scripts/send_email.py
+
+  # ===============================
+  # LOG JOB
+  # ===============================
+
+  log_summary:
+    name: Log Build Summary
+    runs-on: ubuntu-latest
+    needs: [test_backend, test_frontend]
+    steps:
+      - name: Summary
+        run: echo "✅ Todos os testes e builds foram concluídos com sucesso."
