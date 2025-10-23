@@ -22,5 +22,6 @@ def login(email: str, senha: str, db: Session = Depends(get_db)):
             "id": usuario.id,
             "nome": usuario.nome,
             "email": usuario.email,
+            "is_admin": usuario.is_admin
         },
     }
