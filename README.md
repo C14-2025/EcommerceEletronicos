@@ -2,6 +2,7 @@
 
 ![Python](https://img.shields.io/badge/Python-3.10%2B-blue?logo=python)  
 ![FastAPI](https://img.shields.io/badge/FastAPI-0.115%2B-009688?logo=fastapi)  
+![Django](https://img.shields.io/badge/Django-5.0%2B-092E20?logo=django)  
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-15%2B-336791?logo=postgresql)  
 ![Tests](https://img.shields.io/badge/tests-pytest-green?logo=pytest)
 
@@ -16,14 +17,14 @@
 2. [⚙️ Instalação e Requisitos](#-instalação-e-requisitos)  
    - [Pré-requisitos](#pré-requisitos)  
    - [Dependências](#dependências)  
-   - [Instalação](#instalação)  
+   - [Instalação do Backend (FastAPI)](#instalação-do-backend-fastapi)  
+   - [Instalação do Frontend (Django)](#instalação-do-frontend-django)  
 3. [📂 Estrutura do Projeto](#-estrutura-do-projeto)  
 4. [🧪 Testes Unitários](#-testes-unitários)  
-   - [Estrutura da suíte](#estrutura-da-suíte)  
-   - [Execução dos testes](#execução-dos-testes)  
-5. [🚀 Endpoints Principais](#-endpoints-principais)  
-6. [👨‍💻 Contribuidores](#-contribuidores)  
-7. [✅ Conclusão](#-conclusão)
+5. [🚀 Endpoints e Fluxo de Autenticação](#-endpoints-e-fluxo-de-autenticação)  
+6. [💻 Interface Web (Frontend Django)](#-interface-web-frontend-django)  
+7. [👨‍💻 Contribuidores](#-contribuidores)  
+8. [✅ Conclusão](#-conclusão)
 
 </details>
 
@@ -31,13 +32,18 @@
 
 ## 📌 Descrição
 
-API desenvolvida em **Python + FastAPI** integrada ao **PostgreSQL** para gerenciamento de um sistema de e-commerce de eletrônicos.  
+O projeto é uma aplicação completa de **e-commerce de eletrônicos**, com:
 
-Funcionalidades principais:  
-- 👤 Cadastro e gerenciamento de **usuários**  
+- **Backend:** desenvolvido em **FastAPI**, responsável por gerenciar toda a lógica da API, persistência de dados e autenticação.  
+- **Frontend:** desenvolvido em **Django**, responsável pela interface web, autenticação visual de usuários e comunicação com a API FastAPI.  
+- **Banco de Dados:** PostgreSQL.
+
+O sistema permite:
+- 👤 Cadastro e autenticação de **usuários** (com suporte a administradores)  
 - 📦 CRUD de **produtos**  
-- 🧾 Criação de **pedidos** com múltiplos itens  
+- 🧾 Criação e listagem de **pedidos**  
 - 💳 Processamento de **pagamentos**  
+- 🌐 Interface web funcional para login, cadastro e navegação  
 
 ---
 
@@ -47,21 +53,26 @@ Funcionalidades principais:
 - Python **3.10+** (recomendado **3.11+**)  
 - PostgreSQL **15+**  
 - Ambiente virtual configurado (**venv**)
+- Git instalado  
 
 ### Dependências
 As principais bibliotecas utilizadas no projeto são:
 - [FastAPI](https://fastapi.tiangolo.com/) → framework da API  
+- [Django](https://www.djangoproject.com/) → framework da API  
 - [Uvicorn](https://www.uvicorn.org/) → servidor ASGI  
 - [SQLAlchemy](https://www.sqlalchemy.org/) → ORM para PostgreSQL  
 - [psycopg2-binary](https://www.psycopg.org/) → driver PostgreSQL  
 - [pytest](https://docs.pytest.org/) → testes unitários  
 
 ### Instalação
-Clone o repositório e instale as dependências:
+
+## Configurando um ambiente virtual do Python
+
+Primeiramente, é importante clonar o repositório e criar uma venv:
 
 ```bash
 git clone https://github.com/C14-2025/EcommerceEletronicos.git
-cd EcommerceEletronicos/ecommerce
+cd EcommerceEletronicos/
 
 # Crie e ative o ambiente virtual (Windows)
 python -m venv venv
@@ -70,20 +81,21 @@ venv\Scripts\activate
 # Ou no Linux/Mac
 python -m venv venv
 source venv/bin/activate
+```
 
+## Instalação do Backend
+Instale as dependências do backend:
+
+```bash
 # Instale as dependências
 pip install -r backend/requirements.txt
 ```
+## Instalação do frontend
+Clone o repositório e instale as dependências:
 
-📄 Exemplo de `requirements.txt`:
-
-```
-fastapi
-uvicorn
-sqlalchemy
-psycopg2-binary
-pytest
-httpx
+```bash
+# Instale as dependências
+pip install -r frontend/requirements.txt
 ```
 
 ---
@@ -100,44 +112,23 @@ ecommerce/
 │   │   └── main.py       # Ponto de entrada da aplicação FastAPI
 │   ├── tests/            # Suíte de testes unitários
 │   └── requirements.txt
+│── frontend/
+│   ├── ecommerce/        # Configuração do Django
+│   ├── static/           # Imagens, botões e configurações de estilo do site
+│   ├── store/            # App da loja (onde vai ficar os produtos, carrinho, pedidos, etc.)
+│   ├── users/            # App de usuários (Aqui consiste no sistema de cadastro, login e autenticação de usuários)
+│   ├── manage.py         # Arquivo para rodar a aplicação Django
+│   └── requirements.txt
 └── README.md
 ```
 
 ---
 
-## 🧪 Testes Unitários
+## 🚀 Rodando a aplicação
 
-### Estrutura da suíte
-A suíte foi construída com **pytest** e cobre os módulos principais:
+### Backend
 
-- ✅ Rotas de **usuários**  
-- ✅ Rotas de **produtos**  
-- ✅ Rotas de **pedidos**  
-
-### Execução dos testes
-Para rodar os testes, utilize:
-
-```bash
-pytest backend/tests -v
-```
-
-📌 Exemplo de saída:
-
-```
-collected 3 items
-
-tests/test_usuario.py::test_criar_usuario PASSED
-tests/test_produtos.py::test_criar_produto PASSED
-tests/test_pedidos.py::test_criar_pedido PASSED
-
-====================== 3 passed in 0.58s ======================
-```
-
----
-
-## 🚀 Endpoints Principais
-
-Após rodar a aplicação com:
+Para rodar o backend, basta rodar o seguinte comando:
 
 ```bash
 uvicorn app.main:app --reload
@@ -147,10 +138,15 @@ Acesse a documentação interativa no Swagger:
 
 👉 [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs)
 
-Exemplos de rotas:  
-- `POST /usuarios/` → cria usuário  
-- `GET /produtos/` → lista produtos  
-- `POST /pedidos/` → cria pedido  
+### Frontend
+
+Para rodar o backend, basta rodar o seguinte comando:
+
+```bash
+python manage.py runserver 8001
+```
+
+*Obs:* Como o **Django** define a porta padrão como 8000 e ela já está sendo usada pelo backend, é necessário rodar a aplicação em outra porta. No nosso caso, escolhemos a porta 8001.
 
 ---
 
@@ -168,9 +164,9 @@ Exemplos de rotas:
 ## ✅ Conclusão
 
 O projeto:  
-✔️ Fornece endpoints completos para usuários, produtos, pedidos e pagamentos  
-✔️ Integração robusta com PostgreSQL via SQLAlchemy  
-✔️ Suíte de testes unitários para estabilidade da API  
-✔️ Estrutura modular, facilitando manutenção e expansão futura  
+✔️ Backend robusto em FastAPI conectado ao PostgreSQL
+✔️ Frontend em Django com templates e consumo da API
+✔️ Suíte de testes separada para garantir estabilidade
+✔️ Pipeline CI/CD com GitHub Actions
 
 💡 Contribuições são bem-vindas! Abra uma **issue** ou envie um **pull request**.
