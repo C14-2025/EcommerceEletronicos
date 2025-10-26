@@ -1,0 +1,65 @@
+{% if request.session.usuario %}
+<div x-data="{ open: true }" class="relative">
+
+  <!-- Botão de abrir/fechar -->
+  <button 
+    @click="open = !open" 
+    class="absolute top-4 left-4 z-20 bg-blue-600 text-white p-2 rounded-md shadow hover:bg-blue-700 transition"
+    title="Alternar menu"
+  >
+    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none"
+         viewBox="0 0 24 24" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M4 6h16M4 12h16M4 18h16" />
+    </svg>
+  </button>
+
+  <!-- Sidebar -->
+  <div
+    class="fixed top-0 left-0 h-full bg-gray-900 text-white p-5 flex flex-col justify-between shadow-lg transition-all duration-300"
+    :class="open ? 'w-64' : 'w-0 overflow-hidden'"
+  >
+    <div>
+      <h2 class="text-xl font-bold mb-6" x-show="open" x-transition>👤 {{ request.session.usuario.nome }}</h2>
+
+      <ul class="space-y-3">
+        <li>
+          <a href="{% url 'home' %}" class="block py-2 px-3 rounded hover:bg-gray-700 flex items-center space-x-2">
+            <span>🏠</span><span x-show="open" x-transition>Início</span>
+          </a>
+        </li>
+        <li>
+          <a href="{% url 'perfil' %}" class="block py-2 px-3 rounded hover:bg-gray-700 flex items-center space-x-2">
+            <span>👤</span><span x-show="open" x-transition>Meu Perfil</span>
+          </a>
+        </li>
+        <li>
+          <a href="{% url 'carrinho' %}" class="block py-2 px-3 rounded hover:bg-gray-700 flex items-center space-x-2">
+            <span>🛒</span><span x-show="open" x-transition>Meu Carrinho</span>
+          </a>
+        </li>
+        <li>
+          <a href="{% url 'configuracoes' %}" class="block py-2 px-3 rounded hover:bg-gray-700 flex items-center space-x-2">
+            <span>⚙️</span><span x-show="open" x-transition>Configurações</span>
+          </a>
+        </li>
+
+        {% if request.session.usuario.is_admin %}
+        <li>
+          <a href="{% url 'adicionar_produto' %}" class="block py-2 px-3 rounded hover:bg-green-700 bg-green-600 flex items-center space-x-2">
+            <span>➕</span><span x-show="open" x-transition>Adicionar Produto</span>
+          </a>
+        </li>
+        {% endif %}
+      </ul>
+    </div>
+
+    <div class="mt-6 border-t border-gray-700 pt-4">
+      <a href="{% url 'logout' %}" class="text-red-400 hover:text-red-500 flex items-center space-x-2">
+        <span>🚪</span><span x-show="open" x-transition>Sair</span>
+      </a>
+    </div>
+  </div>
+</div>
+{% endif %}
+

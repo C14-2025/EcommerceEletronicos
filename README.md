@@ -19,12 +19,10 @@
    - [Dependências](#dependências)  
    - [Instalação do Backend (FastAPI)](#instalação-do-backend-fastapi)  
    - [Instalação do Frontend (Django)](#instalação-do-frontend-django)  
-3. [📂 Estrutura do Projeto](#-estrutura-do-projeto)  
-4. [🧪 Testes Unitários](#-testes-unitários)  
-5. [🚀 Endpoints e Fluxo de Autenticação](#-endpoints-e-fluxo-de-autenticação)  
-6. [💻 Interface Web (Frontend Django)](#-interface-web-frontend-django)  
-7. [👨‍💻 Contribuidores](#-contribuidores)  
-8. [✅ Conclusão](#-conclusão)
+3. [📂 Estrutura do Projeto](#-estrutura-do-projeto)    
+4. [🚀 Rodando a aplicação](#-endpoints-e-fluxo-de-autenticação)   
+5. [👨‍💻 Contribuidores](#-contribuidores)  
+6. [✅ Conclusão](#-conclusão)
 
 </details>
 
@@ -58,7 +56,7 @@ O sistema permite:
 ### Dependências
 As principais bibliotecas utilizadas no projeto são:
 - [FastAPI](https://fastapi.tiangolo.com/) → framework da API  
-- [Django](https://www.djangoproject.com/) → framework da API  
+- [Django](https://www.djangoproject.com/) → framework Web
 - [Uvicorn](https://www.uvicorn.org/) → servidor ASGI  
 - [SQLAlchemy](https://www.sqlalchemy.org/) → ORM para PostgreSQL  
 - [psycopg2-binary](https://www.psycopg.org/) → driver PostgreSQL  
@@ -128,7 +126,7 @@ ecommerce/
 
 ### Backend
 
-Para rodar o backend, basta rodar o seguinte comando:
+Para rodar o backend, basta usar o seguinte comando:
 
 ```bash
 uvicorn app.main:app --reload
@@ -140,7 +138,7 @@ Acesse a documentação interativa no Swagger:
 
 ### Frontend
 
-Para rodar o backend, basta rodar o seguinte comando:
+Para rodar o frontend, basta usar o seguinte comando:
 
 ```bash
 python manage.py runserver 8001

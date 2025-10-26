@@ -1,5 +1,6 @@
 from sqlalchemy import Column, String, Integer, Text, DECIMAL, TIMESTAMP, ForeignKey
 from sqlalchemy.orm import relationship
+from sqlalchemy import Boolean
 from .connect import Base
 
 
@@ -11,7 +12,7 @@ class Usuario(Base):
     email = Column(String, unique=True, nullable=False, index=True)
     senha = Column(String, nullable=False)
     telefone = Column(String, nullable=True)
-    is_admin = Column(Integer, default=0)  # 0 = usuário comum, 1 = admin
+    is_admin = Column(Boolean, default=False)
 
     pedidos = relationship("Pedido", back_populates="usuario")
 

@@ -5,7 +5,7 @@ import os
 # URL do banco (pegando de variável de ambiente ou default local)
 DATABASE_URL = os.getenv(
     "DATABASE_URL",
-    "postgresql://postgres:0000@localhost:5432/ecommerce"  # ajuste user/senha/db
+    "postgresql://postgres:1234@localhost:5432/ecommerce"  # ajuste user/senha/db
 )
 
 # Cria o engine
