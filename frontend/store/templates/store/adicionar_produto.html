@@ -1,5 +1,42 @@
-{% extends "store/base.html" %}
+{% extends "base.html" %}
 {% block content %}
-<h1 class="text-2xl font-bold mb-4">➕ Adicionar Produto</h1>
-<p>Esta é uma página placeholder. Aqui o admin poderá criar novos produtos futuramente.</p>
+<div class="max-w-lg mx-auto bg-white shadow-lg rounded-lg p-6">
+  <h1 class="text-2xl font-bold mb-6 text-center">Adicionar Produto</h1>
+
+  <form method="POST" action="{% url 'adicionar_produto' %}">
+    {% csrf_token %}
+    <div class="mb-4">
+      <label class="block font-semibold">Nome do Produto</label>
+      <input type="text" name="nome" class="w-full border rounded p-2" required />
+    </div>
+
+    <div class="mb-4">
+      <label class="block font-semibold">Descrição</label>
+      <textarea name="descricao" class="w-full border rounded p-2"></textarea>
+    </div>
+
+    <div class="mb-4">
+      <label class="block font-semibold">Preço (R$)</label>
+      <input type="number" step="0.01" name="preco" class="w-full border rounded p-2" required />
+    </div>
+
+    <div class="mb-6">
+      <label class="block font-semibold">Estoque</label>
+      <input type="number" name="estoque" class="w-full border rounded p-2" required />
+    </div>
+
+    <button type="submit"
+      class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition w-full">
+      Adicionar Produto
+    </button>
+  </form>
+
+  {% if messages %}
+    <ul class="mt-4">
+      {% for message in messages %}
+        <li class="text-{{ message.tags }}-600">{{ message }}</li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+</div>
 {% endblock %}

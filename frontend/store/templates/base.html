@@ -4,41 +4,40 @@
     <meta charset="UTF-8">
     <title>Ecommerce</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
 </head>
-<body class="bg-gray-50 text-gray-800">
-    <nav class="bg-blue-600 text-white p-4 flex justify-between items-center shadow">
-        <a href="/" class="font-bold text-lg">🛍️ Ecommerce</a>
+<body class="bg-gray-50 text-gray-800" x-data="{ sidebarOpen: false }">
 
-        <div class="space-x-4">
+    <!-- Navbar fixa no topo -->
+    <nav class="bg-blue-600 text-white p-4 flex justify-center items-center shadow fixed top-0 left-0 right-0 z-30">
+        <!-- Logo central que também abre/fecha a sidebar -->
+        <a href="javascript:void(0)"
+           @click="sidebarOpen = !sidebarOpen"
+           class="font-bold text-lg text-center cursor-pointer hover:text-blue-200 select-none">
+           🛍️ Ecommerce
+        </a>
+
+        <!-- Área de usuário no canto direito -->
+        <div class="absolute right-4 flex items-center gap-4">
           {% if request.session.usuario %}
-            <span>Bem-vindo, {{ request.session.usuario.nome }}</span>
-            <a href="{% url 'logout' %}" class="hover:underline">Sair</a>
+            <span class="hidden sm:inline">Bem-vindo, {{ request.session.usuario.nome }}</span>
+            <a href="{% url 'logout' %}" class="hover:underline ml-2">Sair</a>
           {% else %}
             <a href="{% url 'login' %}" class="hover:underline">Entrar</a>
             <a href="{% url 'signup' %}" class="hover:underline">Cadastrar</a>
           {% endif %}
         </div>
-
     </nav>
 
     {% include "components/sidebar.html" %}
 
-    <hr class="border-gray-200">
+    <!-- Conteúdo principal -->
+    <div class="pt-16">
+      <main class="p-6 transition-all duration-300"
+            :class="sidebarOpen ? 'md:ml-64' : 'md:ml-0'">
+          {% block content %}{% endblock %}
+      </main>
+    </div>
 
-    {% if messages %}
-      <div class="max-w-xl mx-auto mt-4">
-        {% for message in messages %}
-          <div class="p-3 mb-2 rounded text-white {% if message.tags == 'success' %}bg-green-600{% else %}bg-red-600{% endif %}">
-            {{ message }}
-          </div>
-        {% endfor %}
-      </div>
-    {% endif %}
-
-    <main id="mainContent" class="p-6 transition-all duration-300 {% if request.session.usuario %}ml-0 md:ml-64{% endif %}">
-        {% block content %}{% endblock %}
-    </main>
-
-    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
 </body>
 </html>

@@ -1,6 +1,8 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from .utils.api import get
+from django.views.decorators.http import require_http_methods
+from .utils.api import API_URL  # base da API (ex: http://localhost:8000)
 from django.views.decorators.http import require_POST
 import requests
 
@@ -79,5 +81,33 @@ def adicionar_produto_page(request):
     if not usuario or not usuario.get("is_admin"):
         messages.error(request, "Acesso negado: apenas administradores podem adicionar produtos.")
         return redirect("home")
+
+    if request.method == "POST":
+        nome = request.POST.get("nome")
+        descricao = request.POST.get("descricao")
+        preco = request.POST.get("preco")
+        estoque = request.POST.get("estoque")
+
+        # Envia para a API FastAPI
+        try:
+            resp = requests.post(
+                f"{API_URL}/produtos/?usuario_id={usuario['id']}",
+                json={
+                    "nome": nome,
+                    "descricao": descricao,
+                    "preco": float(preco),
+                    "estoque": int(estoque),
+                },
+                timeout=10
+            )
+
+            if resp.status_code == 201:
+                messages.success(request, f"Produto '{nome}' adicionado com sucesso!")
+                return redirect("produtos")
+            else:
+                messages.error(request, f"Erro ao adicionar produto: {resp.json().get('detail', resp.text)}")
+
+        except Exception as e:
+            messages.error(request, f"Erro de conexão com o servidor: {e}")
 
     return render(request, "store/adicionar_produto.html", {"usuario": usuario})
