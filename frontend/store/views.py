@@ -2,16 +2,23 @@ from django.shortcuts import render, redirect
 from django.contrib import messages
 from .utils.api import get
 from django.views.decorators.http import require_http_methods
+from store.models import Produto
 from .utils.api import API_URL  # base da API (ex: http://localhost:8000)
 from django.views.decorators.http import require_POST
 import requests
+import pprint
 
 def produtos(request):
+    print(">>> ENTROU NA VIEW produtos()")
     produtos = get("/produtos/")
+    pprint.pprint(produtos)  # Mostra no terminal
     return render(request, "store/produtos.html", {"produtos": produtos})
 
 def home(request):
-    return render(request, 'store/home.html')
+    print(">>> ENTROU NA HOME")
+    produtos = get("/produtos/")
+    pprint.pprint(produtos) 
+    return render(request, "store/home.html", {"produtos": produtos})
 
 def carrinho(request):
     # Simulação: carrinho guardado na sessão
