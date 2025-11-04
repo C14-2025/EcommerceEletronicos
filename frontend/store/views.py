@@ -83,6 +83,9 @@ def configuracoes(request):
     return render(request, "store/configuracoes.html", {"usuario": usuario})
 
 
+imagem = requests.FILES.get("imagem")
+imagem_nome = imagem.name if imagem else None
+
 def adicionar_produto_page(request):
     usuario = request.session.get("usuario")
     if not usuario or not usuario.get("is_admin"):
@@ -104,6 +107,7 @@ def adicionar_produto_page(request):
                     "descricao": descricao,
                     "preco": float(preco),
                     "estoque": int(estoque),
+                    "imagem": imagem_nome,  # 🔹 novo campo
                 },
                 timeout=10
             )

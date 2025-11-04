@@ -25,6 +25,7 @@ class Produto(Base):
     descricao = Column(Text)
     preco = Column(DECIMAL(10, 2), nullable=False)
     estoque = Column(Integer, nullable=False)
+    imagem = Column(String, nullable=True)  # 🔹 novo campo opcional
 
     itens = relationship("PedidoItem", back_populates="produto")
 
