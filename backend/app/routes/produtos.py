@@ -1,4 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException
+from fastapi import File, UploadFile, Form
 from sqlalchemy.orm import Session
 from typing import List
 
@@ -29,9 +30,33 @@ def buscar_produto(produto_id: int, db: Session = Depends(get_db)):
 
 # Criar produto
 @router.post("/", response_model=ProdutoOut, status_code=201)
-def criar_produto(dados: ProdutoCreate, usuario_id: int, db: Session = Depends(get_db)):
-    verificar_admin(usuario_id, db)
-    novo = Produto(**dados.dict())
+def criar_produto(
+    usuario_id: int,
+    nome: str = Form(...),
+    descricao: str = Form(None),
+    preco: float = Form(...),
+    estoque: int = Form(...),
+    imagem: UploadFile = File(None),
+    db: Session = Depends(get_db),
+):
+    usuario = verificar_admin(usuario_id, db)
+
+    imagem_nome = None
+    if imagem:
+        # Caminho de salvamento da imagem
+        caminho = os.path.join(os.path.dirname(__file__), "..", "static", "imagens", imagem.filename)
+        with open(caminho, "wb") as f:
+            f.write(imagem.file.read())
+        imagem_nome = imagem.filename
+
+    novo = Produto(
+        nome=nome,
+        descricao=descricao,
+        preco=preco,
+        estoque=estoque,
+        imagem=imagem_nome
+    )
+
     db.add(novo)
     db.commit()
     db.refresh(novo)

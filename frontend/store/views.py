@@ -83,9 +83,7 @@ def configuracoes(request):
     return render(request, "store/configuracoes.html", {"usuario": usuario})
 
 
-imagem = requests.FILES.get("imagem")
-imagem_nome = imagem.name if imagem else None
-
+@require_http_methods(["GET", "POST"])
 def adicionar_produto_page(request):
     usuario = request.session.get("usuario")
     if not usuario or not usuario.get("is_admin"):
@@ -97,18 +95,24 @@ def adicionar_produto_page(request):
         descricao = request.POST.get("descricao")
         preco = request.POST.get("preco")
         estoque = request.POST.get("estoque")
+        imagem = request.FILES.get("imagem")
 
-        # Envia para a API FastAPI
         try:
+            # Se tiver imagem, monta um dicionário files; senão, envia só o JSON
+            files = {"imagem": imagem} if imagem else None
+
+            data = {
+                "nome": nome,
+                "descricao": descricao,
+                "preco": preco,
+                "estoque": estoque,
+            }
+
+            # 🔹 requests.post agora envia multipart (com arquivo)
             resp = requests.post(
                 f"{API_URL}/produtos/?usuario_id={usuario['id']}",
-                json={
-                    "nome": nome,
-                    "descricao": descricao,
-                    "preco": float(preco),
-                    "estoque": int(estoque),
-                    "imagem": imagem_nome,  # 🔹 novo campo
-                },
+                data=data,  # dados normais
+                files=files,  # arquivo (se houver)
                 timeout=10
             )
 
@@ -116,7 +120,7 @@ def adicionar_produto_page(request):
                 messages.success(request, f"Produto '{nome}' adicionado com sucesso!")
                 return redirect("produtos")
             else:
-                messages.error(request, f"Erro ao adicionar produto: {resp.json().get('detail', resp.text)}")
+                messages.error(request, f"Erro ao adicionar produto: {resp.text}")
 
         except Exception as e:
             messages.error(request, f"Erro de conexão com o servidor: {e}")
