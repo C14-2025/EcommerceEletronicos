@@ -1,7 +1,10 @@
 from fastapi import APIRouter, Depends, HTTPException
 from fastapi import File, UploadFile, Form
 from sqlalchemy.orm import Session
+from fastapi.responses import JSONResponse
 from typing import List
+import os
+from datetime import datetime
 
 from app.database.connect import get_db
 from app.database.models import Produto, Usuario

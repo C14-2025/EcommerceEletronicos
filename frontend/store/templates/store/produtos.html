@@ -1,22 +1,50 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="max-w-4xl mx-auto p-6 bg-white shadow-lg rounded-lg">
-  <h1 class="text-2xl font-bold mb-4 text-center">Produtos Disponíveis</h1>
 
-  {% if produtos and not produtos.error %}
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-      {% for produto in produtos %}
-        <div class="border rounded-lg p-4 shadow">
-          <h2 class="font-bold text-lg">{{ produto.nome }}</h2>
-          <p>{{ produto.descricao }}</p>
-          <p class="text-green-600 font-semibold mt-2">R$ {{ produto.preco }}</p>
-          <p class="text-gray-500 text-sm">Estoque: {{ produto.estoque }}</p>
-        </div>
-      {% endfor %}
-    </div>
-  {% else %}
-    <p class="text-center text-gray-500">Nenhum produto disponível.</p>
-  {% endif %}
+<h1 class="text-2xl font-bold mb-6 text-center">🖥️ Produtos Disponíveis</h1>
+
+<form method="get" action="" class="flex gap-2 mb-6 max-w-2xl mx-auto">
+  <input type="text" name="q" placeholder="Buscar produto..."
+    class="border border-gray-300 rounded px-3 py-2 w-full focus:ring focus:ring-blue-200">
+  <button type="submit"
+    class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded">
+    Buscar
+  </button>
+</form>
+
+<!-- Grade de produtos -->
+<div class="grid gap-6 justify-items-center grid-cols-[repeat(auto-fill,minmax(250px,1fr))] px-4">
+  {% for produto in produtos %}
+  <div class="bg-white border rounded-lg shadow hover:shadow-xl p-5 flex flex-col items-center text-center transition-transform transform hover:scale-105 w-full max-w-[260px]">
+    
+    {% if produto.imagem %}
+      <img src="http://127.0.0.1:8000/static/imagens/{{ produto.imagem }}"
+           alt="{{ produto.nome }}"
+           class="w-full h-48 object-cover rounded mb-4">
+    {% else %}
+      <div class="w-full h-48 bg-gray-100 rounded flex items-center justify-center text-gray-400 mb-4">
+        <span>Sem imagem</span>
+      </div>
+    {% endif %}
+
+    <h3 class="text-lg font-semibold mb-1">{{ produto.nome }}</h3>
+    <p class="text-gray-600 text-sm mb-2">{{ produto.descricao|truncatewords:15 }}</p>
+
+    <div class="text-green-600 font-bold mb-1">💰 R$ {{ produto.preco }}</div>
+    <div class="text-gray-500 text-sm mb-4">Estoque: {{ produto.estoque }}</div>
+
+    <form method="POST" action="{% url 'adicionar_ao_carrinho' produto.id %}">
+      {% csrf_token %}
+      <button type="submit"
+        class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded w-full">
+        🛒 Adicionar ao carrinho
+      </button>
+    </form>
+  </div>
+  {% empty %}
+    <p class="text-gray-500 text-center col-span-full">Nenhum produto encontrado.</p>
+  {% endfor %}
 </div>
+
 {% endblock %}
