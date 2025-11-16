@@ -126,3 +126,47 @@ def adicionar_produto_page(request):
             messages.error(request, f"Erro de conexão com o servidor: {e}")
 
     return render(request, "store/adicionar_produto.html", {"usuario": usuario})
+
+
+@require_http_methods(["GET", "POST"])
+def remover_produto_page(request):
+    usuario = request.session.get("usuario")
+
+    if not usuario or not usuario.get("is_admin"):
+        messages.error(request, "Acesso negado: somente administradores podem remover produtos.")
+        return redirect("home")
+
+    # GET → Apenas listar os produtos
+    produtos = get("/produtos/")
+
+    return render(request, "store/remover_produto.html", {
+        "produtos": produtos,
+        "usuario": usuario
+    })
+
+
+@require_POST
+def remover_produto(request, produto_id):
+    usuario = request.session.get("usuario")
+
+    if not usuario or not usuario.get("is_admin"):
+        messages.error(request, "Acesso negado.")
+        return redirect("home")
+
+    try:
+        resp = requests.delete(
+            f"{API_URL}/produtos/{produto_id}?usuario_id={usuario['id']}",
+            timeout=10
+        )
+
+        if resp.status_code == 204:
+            messages.success(request, "Produto removido com sucesso!")
+        else:
+            messages.error(request, f"Erro ao remover produto: {resp.text}")
+
+    except Exception as e:
+        messages.error(request, f"Erro ao conectar ao servidor: {e}")
+
+    return redirect("remover_produto")
+
+

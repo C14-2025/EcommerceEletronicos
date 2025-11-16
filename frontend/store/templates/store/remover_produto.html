@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h1 class="text-2xl font-bold mb-6 text-center">🗑️ Remover Produtos</h1>
+
+<div class="max-w-4xl mx-auto bg-white shadow-md rounded p-6">
+
+  <table class="w-full text-left">
+    <thead>
+      <tr class="border-b">
+        <th class="py-2">Imagem</th>
+        <th class="py-2">Nome</th>
+        <th class="py-2">Preço</th>
+        <th class="py-2">Ações</th>
+      </tr>
+    </thead>
+    <tbody>
+
+      {% for produto in produtos %}
+      <tr class="border-b">
+        <td class="py-2">
+          {% if produto.imagem %}
+            <img src="http://127.0.0.1:8000/static/imagens/{{ produto.imagem }}"
+                 class="h-16 w-16 object-cover rounded">
+          {% else %}
+            <div class="h-16 w-16 bg-gray-100 flex items-center justify-center">—</div>
+          {% endif %}
+        </td>
+
+        <td class="py-2">{{ produto.nome }}</td>
+        <td class="py-2">R$ {{ produto.preco }}</td>
+
+        <td class="py-2">
+          <form action="{% url 'remover_produto_confirmar' produto.id %}" method="POST">
+            {% csrf_token %}
+            <button
+              type="submit"
+              class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded">
+              Remover
+            </button>
+          </form>
+        </td>
+      </tr>
+      {% endfor %}
+
+    </tbody>
+  </table>
+
+</div>
+
+{% endblock %}
