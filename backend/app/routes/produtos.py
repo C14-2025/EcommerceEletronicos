@@ -9,6 +9,7 @@ from datetime import datetime
 from app.database.connect import get_db
 from app.database.models import Produto, Usuario
 from app.schemas.produto import ProdutoCreate, ProdutoOut, ProdutoUpdate
+from app.config import IMAGENS_DIR 
 
 router = APIRouter(prefix="/produtos", tags=["produtos"])
 
@@ -42,15 +43,28 @@ def criar_produto(
     imagem: UploadFile = File(None),
     db: Session = Depends(get_db),
 ):
-    usuario = verificar_admin(usuario_id, db)
+    verificar_admin(usuario_id, db)
 
     imagem_nome = None
+
     if imagem:
-        # Caminho de salvamento da imagem
-        caminho = os.path.join(os.path.dirname(__file__), "..", "static", "imagens", imagem.filename)
-        with open(caminho, "wb") as f:
+        # Usa o mesmo diretório estático da main.py
+        pasta_imagens = IMAGENS_DIR
+
+        # Garante que existe
+        os.makedirs(pasta_imagens, exist_ok=True)
+
+        # Nome único
+        timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
+        nome_arquivo = f"{timestamp}_{imagem.filename}"
+
+        # Caminho final
+        caminho_completo = os.path.join(pasta_imagens, nome_arquivo)
+
+        with open(caminho_completo, "wb") as f:
             f.write(imagem.file.read())
-        imagem_nome = imagem.filename
+
+        imagem_nome = nome_arquivo
 
     novo = Produto(
         nome=nome,
@@ -64,6 +78,7 @@ def criar_produto(
     db.commit()
     db.refresh(novo)
     return novo
+
 
 # Atualizar produto
 @router.put("/{produto_id}", response_model=ProdutoOut)

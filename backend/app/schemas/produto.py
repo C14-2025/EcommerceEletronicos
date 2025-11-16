@@ -27,5 +27,6 @@ class ProdutoOut(BaseModel):
     descricao: Optional[str] = None
     preco: float
     estoque: int
+    imagem: Optional[str] = None
 
     model_config = ConfigDict(from_attributes=True)
