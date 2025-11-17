@@ -33,9 +33,12 @@
 
     <!-- Conteúdo principal -->
     <div class="pt-16">
-      <main class="p-6 transition-all duration-300"
-            :class="sidebarOpen ? 'md:ml-64' : 'md:ml-0'">
+      <main
+        class="p-6 w-full min-h-screen bg-gray-50 transition-all duration-300"
+        :class="sidebarOpen ? 'md:pl-64' : 'md:pl-0'">
+        <div class="max-w-[1800px] mx-auto">
           {% block content %}{% endblock %}
+        </div>
       </main>
     </div>
 

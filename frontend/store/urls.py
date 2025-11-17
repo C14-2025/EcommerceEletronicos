@@ -10,4 +10,6 @@ urlpatterns = [
     path("perfil/", views.perfil, name="perfil"),
     path("configuracoes/", views.configuracoes, name="configuracoes"),
     path("produtos/adicionar/", views.adicionar_produto_page, name="adicionar_produto"),
+    path("produtos/remover/", views.remover_produto_page, name="remover_produto"),
+    path("produtos/remover/<int:produto_id>/", views.remover_produto, name="remover_produto_confirmar"),
 ]
