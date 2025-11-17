@@ -2,6 +2,8 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.http import HttpResponse
+from django.views.decorators.http import require_http_methods
+from django.views.decorators.http import require_POST
 from django.views.decorators.csrf import csrf_exempt
 import requests
 
@@ -70,3 +72,74 @@ def logout_view(request):
     request.session.flush()  # limpa sessão
     messages.info(request, "Você saiu da sua conta.")
     return redirect("home")
+
+
+def mudar_senha(request):
+    usuario = request.session.get("usuario")
+    if not usuario:
+        messages.error(request, "Você precisa estar logado.")
+        return redirect("login")
+
+    if request.method == "POST":
+        senha_atual = request.POST.get("senha_atual")
+        nova_senha = request.POST.get("nova_senha")
+        confirmar = request.POST.get("confirmar")
+
+        if nova_senha != confirmar:
+            messages.error(request, "As senhas não coincidem.")
+            return redirect("mudar_senha")
+
+        # Validar senha atual
+        if senha_atual != usuario["senha"]:
+            messages.error(request, "Senha atual incorreta.")
+            return redirect("mudar_senha")
+
+        # Atualizar no backend
+        try:
+            resp = requests.put(
+                f"{BACKEND_URL}/usuarios/{usuario['id']}",
+                json={"senha": nova_senha},
+            )
+
+            if resp.status_code == 200:
+                # Atualiza sessão
+                usuario["senha"] = nova_senha
+                request.session["usuario"] = usuario
+
+                messages.success(request, "Senha alterada com sucesso!")
+                return redirect("perfil")
+
+            else:
+                messages.error(request, f"Erro: {resp.text}")
+
+        except Exception as e:
+            messages.error(request, f"Erro ao conectar ao servidor: {e}")
+
+    return render(request, "users/mudar_senha.html")
+
+
+@require_POST
+def deletar_conta(request):
+    usuario = request.session.get("usuario")
+
+    if not usuario:
+        messages.error(request, "Você precisa estar logado.")
+        return redirect("login")
+
+    BACKEND_URL = "http://127.0.0.1:8000"
+
+    try:
+        resp = requests.delete(f"{BACKEND_URL}/usuarios/{usuario['id']}")
+
+        if resp.status_code == 204:
+            request.session.flush()
+            messages.success(request, "Sua conta foi deletada com sucesso.")
+            return redirect("home")
+
+        else:
+            messages.error(request, f"Erro ao deletar: {resp.text}")
+
+    except Exception as e:
+        messages.error(request, f"Erro ao conectar ao servidor: {e}")
+
+    return redirect("perfil")

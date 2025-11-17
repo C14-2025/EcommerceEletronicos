@@ -8,6 +8,25 @@ from django.views.decorators.http import require_POST
 import requests
 import pprint
 
+
+def perfil(request):
+    usuario = request.session.get("usuario")
+    if not usuario:
+        messages.error(request, "Você precisa estar logado para acessar o perfil.")
+        return redirect("login")
+
+    # Buscar pedidos do usuário no backend
+    try:
+        pedidos = get(f"/pedidos/?usuario_id={usuario['id']}")
+    except Exception:
+        pedidos = []
+
+    return render(request, "store/perfil.html", {
+        "usuario": usuario,
+        "pedidos": pedidos
+    })
+
+
 def produtos(request):
     print(">>> ENTROU NA VIEW produtos()")
     produtos = get("/produtos/")

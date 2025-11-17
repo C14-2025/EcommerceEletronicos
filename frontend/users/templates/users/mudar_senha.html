@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="max-w-md mx-auto bg-white shadow p-6 rounded-lg mt-10">
+
+  <h1 class="text-xl font-bold mb-4">Alterar Senha</h1>
+
+  {% if messages %}
+    <ul class="mb-4">
+      {% for message in messages %}
+        <li class="text-sm p-2 rounded {{ message.tags }}">
+          {{ message }}
+        </li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+
+  <form method="POST">
+    {% csrf_token %}
+
+    <label class="block mb-2">Senha Atual:</label>
+    <input type="password" name="senha_atual" required class="w-full border rounded p-2 mb-4" />
+
+    <label class="block mb-2">Nova Senha:</label>
+    <input type="password" name="nova_senha" required class="w-full border rounded p-2 mb-4" />
+
+    <label class="block mb-2">Confirmar Nova Senha:</label>
+    <input type="password" name="confirmar" required class="w-full border rounded p-2 mb-6" />
+
+    <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded">
+      Alterar Senha
+    </button>
+  </form>
+
+</div>
+
+{% endblock %}
