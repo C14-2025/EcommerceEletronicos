@@ -1,24 +1,48 @@
 {% extends "base.html" %}
 {% block content %}
-<h1 class="text-2xl font-bold mb-4">Finalizar Compra</h1>
-<p class="mb-4 text-gray-700">Revise seus itens antes de confirmar a compra:</p>
 
-<ul class="mb-4 space-y-2">
-    <li class="bg-white p-4 rounded shadow flex justify-between">
-        Produto A <span class="font-semibold">R$ 50,00</span>
-    </li>
-    <li class="bg-white p-4 rounded shadow flex justify-between">
-        Produto B <span class="font-semibold">R$ 30,00</span>
-    </li>
-</ul>
+<div class="max-w-3xl mx-auto mt-8 bg-white p-6 rounded-xl shadow-lg">
 
-<p class="text-lg font-bold mb-6">Total: R$ 80,00</p>
+  <h1 class="text-3xl font-bold mb-6">Finalizar Compra</h1>
 
-<form method="post" class="bg-white p-6 rounded shadow">
-    {% csrf_token %}
-    <button type="submit"
-        class="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded font-semibold">
-        Confirmar Pedido
-    </button>
-</form>
+  {% if itens %}
+    <table class="w-full text-left border-collapse mb-6">
+      <thead>
+        <tr class="bg-gray-100 text-gray-700">
+          <th class="py-2 px-3">Produto</th>
+          <th class="py-2 px-3 text-center">Qtd</th>
+          <th class="py-2 px-3 text-right">Preço</th>
+          <th class="py-2 px-3 text-right">Subtotal</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for item in itens %}
+        <tr class="border-b">
+          <td class="py-2 px-3">{{ item.produto_nome }}</td>
+          <td class="py-2 px-3 text-center">{{ item.quantidade }}</td>
+          <td class="py-2 px-3 text-right">R$ {{ item.produto_preco }}</td>
+          <td class="py-2 px-3 text-right font-semibold">
+            R$ {{ item.produto_preco|floatformat:2 }}
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+    <p class="text-xl font-bold text-right mb-6">Total: R$ {{ total|floatformat:2 }}</p>
+
+    <form method="post" action="{% url 'finalizar_compra' %}">
+      {% csrf_token %}
+      <button type="submit"
+        class="w-full bg-green-600 hover:bg-green-700 text-white py-3 rounded-lg text-lg font-semibold">
+        Confirmar e Simular Pagamento
+      </button>
+    </form>
+
+  {% else %}
+    <p class="text-gray-600 text-center">Seu carrinho está vazio.</p>
+  {% endif %}
+
+</div>
+
 {% endblock %}
