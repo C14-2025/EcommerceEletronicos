@@ -29,7 +29,7 @@
           <td class="py-2 px-3">{{ item.nome }}</td>
           <td class="py-2 px-3 text-center">{{ item.quantidade }}</td>
           <td class="py-2 px-3 text-right">R$ {{ item.preco|floatformat:2 }}</td>
-          <td class="py-2 px-3 text-right font-semibold">R$ {{ item.preco|floatformat:2|add:item.preco*item.quantidade|floatformat:2 }}</td>
+          <td class="py-2 px-3 text-right font-semibold"> {% widthratio item.preco 1 item.quantidade as subtotal %} R$ {{ subtotal|floatformat:2 }} </td>          
         </tr>
         {% endfor %}
       </tbody>

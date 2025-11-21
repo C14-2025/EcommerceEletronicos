@@ -53,9 +53,10 @@ def carrinho(request):
     total = sum(item["produto_preco"] * item["quantidade"] for item in itens)
 
     return render(request, "store/carrinho.html", {
-        "itens": itens,
+        "carrinho": itens,
         "total": total
     })
+
 
 
 def checkout(request):
