@@ -40,49 +40,93 @@ def home(request):
     return render(request, "store/home.html", {"produtos": produtos})
 
 def carrinho(request):
-    # Simulação: carrinho guardado na sessão
-    carrinho = request.session.get("carrinho", [])
     usuario = request.session.get("usuario")
-
     if not usuario:
-        messages.info(request, "Você precisa estar logado para ver seu carrinho.")
         return redirect("login")
 
-    total = sum(item["preco"] * item["quantidade"] for item in carrinho)
+    try:
+        resp = get(f"/carrinho/?usuario_id={usuario['id']}")
+        itens = resp["itens"]
+    except Exception:
+        itens = []
+
+    total = sum(item["produto_preco"] * item["quantidade"] for item in itens)
 
     return render(request, "store/carrinho.html", {
-        "carrinho": carrinho,
-        "total": total,
-        "usuario": usuario
+        "carrinho": itens,
+        "total": total
     })
 
+
+
 def checkout(request):
-    return render(request, "store/checkout.html")
+    usuario = request.session.get("usuario")
+    if not usuario:
+        return redirect("login")
+
+    # Buscar itens do carrinho REAL
+    try:
+        data = get(f"/carrinho/?usuario_id={usuario['id']}")
+        itens = data["itens"]
+    except Exception:
+        itens = []
+
+    total = sum(item["produto_preco"] * item["quantidade"] for item in itens)
+
+    return render(request, "store/checkout.html", {
+        "itens": itens,
+        "total": total
+    })
+
+@require_POST
+def finalizar_compra(request):
+    usuario = request.session.get("usuario")
+    if not usuario:
+        return redirect("login")
+
+    try:
+        resp = requests.post(
+            f"{API_URL}/carrinho/finalizar",
+            params={"usuario_id": usuario["id"]}
+        )
+
+        if resp.status_code == 200:
+            messages.success(request, "Compra finalizada com sucesso!")
+            return redirect("perfil")
+
+        else:
+            messages.error(request, resp.json().get("detail", "Erro ao finalizar compra"))
+
+    except Exception as e:
+        messages.error(request, f"Erro ao conectar ao servidor: {e}")
+
+    return redirect("checkout")
+
 
 @require_POST
 def adicionar_ao_carrinho(request, produto_id):
-    produtos = get(f"/produtos/{produto_id}")
-    if not produtos:
-        messages.error(request, "Produto não encontrado.")
-        return redirect("produtos")
+    usuario = request.session.get("usuario")
 
-    carrinho = request.session.get("carrinho", [])
-    # Verifica se o produto já está no carrinho
-    for item in carrinho:
-        if item["id"] == produtos["id"]:
-            item["quantidade"] += 1
-            break
-    else:
-        carrinho.append({
-            "id": produtos["id"],
-            "nome": produtos["nome"],
-            "preco": float(produtos["preco"]),
-            "quantidade": 1
-        })
+    if not usuario:
+        messages.error(request, "Você precisa estar logado.")
+        return redirect("login")
 
-    request.session["carrinho"] = carrinho
-    messages.success(request, f"{produtos['nome']} foi adicionado ao carrinho!")
+    try:
+        resp = requests.post(
+            f"{API_URL}/carrinho/adicionar",
+            params={"usuario_id": usuario["id"]},
+            json={"produto_id": produto_id, "quantidade": 1}
+        )
+
+        if resp.status_code == 200:
+            messages.success(request, "Produto adicionado ao carrinho!")
+        else:
+            messages.error(request, resp.json().get("detail", "Erro ao adicionar item"))
+    except Exception as e:
+        messages.error(request, f"Erro ao conectar: {e}")
+
     return redirect("produtos")
+
 
 def perfil(request):
     usuario = request.session.get("usuario")

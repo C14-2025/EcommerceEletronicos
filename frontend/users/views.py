@@ -41,6 +41,7 @@ def login_view(request):
             return redirect("login")
 
         try:
+            # 1️⃣ Tenta fazer login no backend
             response = requests.post(
                 f"{BACKEND_URL}/auth/login",
                 params={"email": email, "senha": senha}
@@ -48,17 +49,32 @@ def login_view(request):
 
             if response.status_code == 200:
                 data = response.json()
-                usuario = data.get("usuario")
+                usuario_login = data.get("usuario")
 
-                # Armazena o usuário na sessão
-                request.session["usuario"] = usuario
-                messages.success(request, f"Bem-vindo(a), {usuario['nome']}!")
+                # 2️⃣ Buscar informações completas do usuário
+                try:
+                    detalhes = requests.get(
+                        f"{BACKEND_URL}/usuarios/{usuario_login['id']}"
+                    )
 
+                    if detalhes.status_code == 200:
+                        usuario_completo = detalhes.json()
+                    else:
+                        usuario_completo = usuario_login  # fallback
+
+                except Exception:
+                    usuario_completo = usuario_login  # fallback
+
+                # 3️⃣ Salva usuário completo na sessão
+                request.session["usuario"] = usuario_completo
+
+                messages.success(request, f"Bem-vindo(a), {usuario_completo['nome']}!")
                 return redirect("home")
 
             elif response.status_code in (401, 404):
                 erro = response.json().get("detail", "Credenciais inválidas.")
                 messages.error(request, erro)
+
             else:
                 messages.error(request, f"Erro inesperado: {response.status_code}")
 
@@ -66,6 +82,7 @@ def login_view(request):
             messages.error(request, f"Erro ao conectar com o backend: {e}")
 
     return render(request, "users/login.html")
+
 
 
 def logout_view(request):
@@ -89,33 +106,43 @@ def mudar_senha(request):
             messages.error(request, "As senhas não coincidem.")
             return redirect("mudar_senha")
 
-        # Validar senha atual
-        if senha_atual != usuario["senha"]:
-            messages.error(request, "Senha atual incorreta.")
+        # 1️⃣ Validar senha atual usando o endpoint de login
+        try:
+            resp_login = requests.post(
+                f"{BACKEND_URL}/auth/login",
+                params={"email": usuario["email"], "senha": senha_atual}
+            )
+
+            if resp_login.status_code != 200:
+                messages.error(request, "Senha atual incorreta.")
+                return redirect("mudar_senha")
+
+        except Exception as e:
+            messages.error(request, f"Erro ao validar senha: {e}")
             return redirect("mudar_senha")
 
-        # Atualizar no backend
+        # 2️⃣ Atualizar a senha no backend
         try:
-            resp = requests.put(
+            resp_update = requests.put(
                 f"{BACKEND_URL}/usuarios/{usuario['id']}",
                 json={"senha": nova_senha},
             )
 
-            if resp.status_code == 200:
-                # Atualiza sessão
-                usuario["senha"] = nova_senha
+            if resp_update.status_code == 200:
+                # Atualiza sessão (não com a senha)
                 request.session["usuario"] = usuario
 
                 messages.success(request, "Senha alterada com sucesso!")
                 return redirect("perfil")
 
             else:
-                messages.error(request, f"Erro: {resp.text}")
+                messages.error(request, f"Erro: {resp_update.text}")
 
         except Exception as e:
             messages.error(request, f"Erro ao conectar ao servidor: {e}")
 
     return render(request, "users/mudar_senha.html")
+
 
 
 @require_POST

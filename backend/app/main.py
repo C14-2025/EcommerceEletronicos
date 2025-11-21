@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
-from app.routes import usuarios, produtos, pedidos, pagamentos, auth
+from app.routes import usuarios, produtos, pedidos, pagamentos, auth, carrinho
 from app.database.connect import engine, Base
 from app.config import IMAGENS_DIR
 import os
@@ -19,6 +19,7 @@ app.include_router(produtos.router)
 app.include_router(pedidos.router)
 app.include_router(pagamentos.router)
 app.include_router(auth.router)
+app.include_router(carrinho.router)
 
 
 @app.get("/")

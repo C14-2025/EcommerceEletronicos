@@ -68,3 +68,24 @@ class Pagamento(Base):
     data_pagamento = Column(TIMESTAMP)
 
     pedido = relationship("Pedido", back_populates="pagamento")
+
+class Carrinho(Base):
+    __tablename__ = "carrinhos"
+
+    id = Column(Integer, primary_key=True, index=True, autoincrement=True)
+    usuario_id = Column(Integer, ForeignKey("usuarios.id"), nullable=False)
+
+    usuario = relationship("Usuario")
+    itens = relationship("CarrinhoItem", back_populates="carrinho", cascade="all, delete-orphan")
+
+
+class CarrinhoItem(Base):
+    __tablename__ = "carrinho_itens"
+
+    id = Column(Integer, primary_key=True, index=True, autoincrement=True)
+    carrinho_id = Column(Integer, ForeignKey("carrinhos.id", ondelete="CASCADE"))
+    produto_id = Column(Integer, ForeignKey("produtos.id"))
+    quantidade = Column(Integer, nullable=False, default=1)
+
+    carrinho = relationship("Carrinho", back_populates="itens")
+    produto = relationship("Produto")
