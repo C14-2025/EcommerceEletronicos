@@ -35,11 +35,14 @@
         </li>
 
         <li>
-          <a href="{% url 'configuracoes' %}" class="block py-2 px-3 rounded hover:bg-gray-800 flex items-center gap-3">
-            <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 15.5A3.5 3.5 0 1112 8.5a3.5 3.5 0 010 7z"></path></svg>
-            <span x-show="sidebarOpen" x-transition>Configurações</span>
-          </a>
-        </li>
+            <a href="{% url 'meus_pedidos' %}" class="block py-2 px-3 rounded hover:bg-gray-800 flex items-center gap-3">
+              <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <path d="M3 3h18M3 9h18M3 15h18M3 21h18"/>
+              </svg>
+              <span x-show="sidebarOpen" x-transition>Meus Pedidos</span>
+            </a>
+          </li>
+
 
         {% if request.session.usuario.is_admin %}
         <li>
