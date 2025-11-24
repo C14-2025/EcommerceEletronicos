@@ -46,16 +46,26 @@ def carrinho(request):
 
     try:
         resp = get(f"/carrinho/?usuario_id={usuario['id']}")
-        itens = resp["itens"]
+
+        itens = [
+            {
+                "nome": item["produto_nome"],
+                "preco": item["produto_preco"],
+                "quantidade": item["quantidade"]
+            }
+            for item in resp.get("itens", [])
+        ]
+
     except Exception:
         itens = []
 
-    total = sum(item["produto_preco"] * item["quantidade"] for item in itens)
+    total = sum(item["preco"] * item["quantidade"] for item in itens)
 
     return render(request, "store/carrinho.html", {
         "carrinho": itens,
         "total": total
     })
+
 
 
 

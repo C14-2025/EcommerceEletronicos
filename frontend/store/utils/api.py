@@ -16,21 +16,12 @@ def get(endpoint: str):
             from pprint import pprint
             pprint(data)
 
-            #Se vier um dicionário com "itens" → retorna lista
-            if isinstance(data, dict) and "itens" in data:
-                return data["itens"]
-
-            #Se vier lista → retorna lista
-            if isinstance(data, list):
-                return data
-
-            #Qualquer outra estrutura → retorna lista vazia
-            return []
+            return data
 
         else:
             print(f"🔴 Erro da API: {resp.text}")
-            return []
+            return None
 
     except Exception as e:
         print(f"🚨 Erro na conexão com API: {e}")
-        return []
+        return None
