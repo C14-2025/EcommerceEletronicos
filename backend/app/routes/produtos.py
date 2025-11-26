@@ -7,7 +7,7 @@ import os
 from datetime import datetime
 
 from app.database.connect import get_db
-from app.database.models import Produto, Usuario
+from app.database.models import Produto, Usuario, PedidoItem
 from app.schemas.produto import ProdutoCreate, ProdutoOut, ProdutoUpdate
 from app.config import IMAGENS_DIR 
 
@@ -23,6 +23,22 @@ def verificar_admin(usuario_id: int, db: Session):
 @router.get("/", response_model=List[ProdutoOut])
 def listar_produtos(db: Session = Depends(get_db)):
     return db.query(Produto).all()
+
+@router.get("/{produto_id}", response_model=ProdutoOut)
+def get_produto(produto_id: int, db: Session = Depends(get_db)):
+    produto = db.query(Produto).filter(Produto.id == produto_id).first()
+
+    if not produto:
+        raise HTTPException(status_code=404, detail="Produto não encontrado")
+
+    # contar número de compras:
+    compras = db.query(PedidoItem).filter(PedidoItem.produto_id == produto_id).count()
+
+    data = ProdutoOut.from_orm(produto)
+    data.compras = compras
+
+    return data
+
 
 # Buscar por ID
 @router.get("/{produto_id}", response_model=ProdutoOut)

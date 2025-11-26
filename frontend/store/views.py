@@ -33,6 +33,16 @@ def produtos(request):
     pprint.pprint(produtos)  # Mostra no terminal
     return render(request, "store/produtos.html", {"produtos": produtos})
 
+def produto_detalhes(request, produto_id):
+    produto = get(f"/produtos/{produto_id}")
+
+    if produto is None:
+        messages.error(request, "Produto não encontrado.")
+        return redirect("home")
+
+    return render(request, "store/produto_detalhes.html", {"produto": produto})
+
+
 def home(request):
     print(">>> ENTROU NA HOME")
     produtos = get("/produtos/")
