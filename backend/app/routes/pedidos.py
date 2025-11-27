@@ -14,8 +14,25 @@ router = APIRouter(prefix="/pedidos", tags=["pedidos"])
 # Listar todos os pedidos
 # ==========================
 @router.get("/", response_model=List[PedidoOut])
-def listar_pedidos(db: Session = Depends(get_db)):
-    return db.query(Pedido).all()
+def listar_pedidos(usuario_id: int = None, db: Session = Depends(get_db)):
+    from sqlalchemy.orm import joinedload
+    from app.database.models import PedidoItem, Pagamento
+
+    query = (
+        db.query(Pedido)
+        .options(
+            joinedload(Pedido.itens).joinedload(PedidoItem.produto),  
+            joinedload(Pedido.pagamento)                               
+        )
+    )
+
+    if usuario_id is not None:
+        query = query.filter(Pedido.usuario_id == usuario_id)
+
+    pedidos = query.all()
+    return pedidos
+
+
 
 
 # ==========================

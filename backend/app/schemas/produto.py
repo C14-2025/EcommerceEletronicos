@@ -28,5 +28,6 @@ class ProdutoOut(BaseModel):
     preco: float
     estoque: int
     imagem: Optional[str] = None
+    compras: int = 0 
 
     model_config = ConfigDict(from_attributes=True)

@@ -33,6 +33,16 @@ def produtos(request):
     pprint.pprint(produtos)  # Mostra no terminal
     return render(request, "store/produtos.html", {"produtos": produtos})
 
+def produto_detalhes(request, produto_id):
+    produto = get(f"/produtos/{produto_id}")
+
+    if produto is None:
+        messages.error(request, "Produto não encontrado.")
+        return redirect("home")
+
+    return render(request, "store/produto_detalhes.html", {"produto": produto})
+
+
 def home(request):
     print(">>> ENTROU NA HOME")
     produtos = get("/produtos/")
@@ -46,16 +56,44 @@ def carrinho(request):
 
     try:
         resp = get(f"/carrinho/?usuario_id={usuario['id']}")
-        itens = resp["itens"]
+
+        itens = [
+            {
+                "nome": item["produto_nome"],
+                "preco": item["produto_preco"],
+                "quantidade": item["quantidade"]
+            }
+            for item in resp.get("itens", [])
+        ]
+
     except Exception:
         itens = []
 
-    total = sum(item["produto_preco"] * item["quantidade"] for item in itens)
+    total = sum(item["preco"] * item["quantidade"] for item in itens)
 
     return render(request, "store/carrinho.html", {
         "carrinho": itens,
         "total": total
     })
+
+
+def meus_pedidos(request):
+    usuario = request.session.get("usuario")
+    if not usuario:
+        messages.error(request, "Você precisa estar logado para ver seus pedidos.")
+        return redirect("login")
+
+    pedidos = get(f"/pedidos/?usuario_id={usuario['id']}")
+
+    # Caso a API falhe, garantimos uma lista vazia
+    if pedidos is None:
+        pedidos = []
+
+    return render(request, "store/meus_pedidos.html", {
+        "usuario": usuario,
+        "pedidos": pedidos
+    })
+
 
 
 
@@ -92,7 +130,7 @@ def finalizar_compra(request):
 
         if resp.status_code == 200:
             messages.success(request, "Compra finalizada com sucesso!")
-            return redirect("perfil")
+            return redirect("home")
 
         else:
             messages.error(request, resp.json().get("detail", "Erro ao finalizar compra"))
@@ -126,24 +164,6 @@ def adicionar_ao_carrinho(request, produto_id):
         messages.error(request, f"Erro ao conectar: {e}")
 
     return redirect("produtos")
-
-
-def perfil(request):
-    usuario = request.session.get("usuario")
-    if not usuario:
-        messages.error(request, "Você precisa estar logado para acessar o perfil.")
-        return redirect("login")
-
-    return render(request, "store/perfil.html", {"usuario": usuario})
-
-
-def configuracoes(request):
-    usuario = request.session.get("usuario")
-    if not usuario:
-        messages.error(request, "Você precisa estar logado para acessar as configurações.")
-        return redirect("login")
-
-    return render(request, "store/configuracoes.html", {"usuario": usuario})
 
 
 @require_http_methods(["GET", "POST"])
