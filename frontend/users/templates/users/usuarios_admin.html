@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="max-w-5xl mx-auto bg-white shadow p-6 rounded-lg">
+
+  <h1 class="text-2xl font-bold mb-6">👥 Gerenciar Usuários</h1>
+
+  {% if usuarios %}
+  <table class="w-full border rounded-lg overflow-hidden">
+    <thead class="bg-gray-100">
+      <tr>
+        <th class="p-3 border">ID</th>
+        <th class="p-3 border">Nome</th>
+        <th class="p-3 border">Email</th>
+        <th class="p-3 border">Telefone</th>
+        <th class="p-3 border">Admin?</th>
+        <th class="p-3 border">Ações</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      {% for u in usuarios %}
+      <tr class="hover:bg-gray-50">
+        <td class="border p-3">{{ u.id }}</td>
+        <td class="border p-3">{{ u.nome }}</td>
+        <td class="border p-3">{{ u.email }}</td>
+        <td class="border p-3">{{ u.telefone }}</td>
+
+        <td class="border p-3 text-center">
+          {% if u.is_admin %}
+            <span class="text-green-600 font-semibold">Sim</span>
+          {% else %}
+            <span class="text-red-600">Não</span>
+          {% endif %}
+        </td>
+
+        <td class="border p-3 text-center">
+          {% if not u.is_admin %}
+          <form method="POST"
+                action="{% url 'admin_remover_usuario' u.id %}"
+                onsubmit="return confirm('Remover este usuário?')">
+            {% csrf_token %}
+            <button class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded">
+              Remover
+            </button>
+          </form>
+          {% else %}
+          <span class="text-gray-400">Protegido</span>
+          {% endif %}
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <p class="text-gray-600">Nenhum usuário encontrado.</p>
+  {% endif %}
+
+</div>
+
+{% endblock %}

@@ -170,3 +170,41 @@ def deletar_conta(request):
         messages.error(request, f"Erro ao conectar ao servidor: {e}")
 
     return redirect("perfil")
+
+
+def admin_usuarios(request):
+    usuario = request.session.get("usuario")
+
+    if not usuario or not usuario.get("is_admin"):
+        messages.error(request, "Acesso negado.")
+        return redirect("home")
+
+    from store.utils.api import get, API_URL
+    usuarios = get("/usuarios/") or []
+
+    return render(request, "users/usuarios_admin.html", {
+        "usuarios": usuarios
+    })
+
+
+@require_POST
+def admin_remover_usuario(request, usuario_id):
+    usuario = request.session.get("usuario")
+
+    if not usuario or not usuario.get("is_admin"):
+        messages.error(request, "Acesso negado.")
+        return redirect("home")
+
+    import requests
+    from store.utils.api import API_URL
+
+    try:
+        resp = requests.delete(f"{API_URL}/usuarios/{usuario_id}")
+        if resp.status_code == 204:
+            messages.success(request, "Usuário removido com sucesso.")
+        else:
+            messages.error(request, f"Erro ao remover: {resp.text}")
+    except Exception as e:
+        messages.error(request, f"Erro ao conectar ao backend: {e}")
+
+    return redirect("admin_usuarios")

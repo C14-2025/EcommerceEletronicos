@@ -7,7 +7,7 @@ from .connect import Base
 class Usuario(Base):
     __tablename__ = "usuarios"
 
-    id = Column(Integer, primary_key=True, index=True, autoincrement=True)  # 🔑 importante
+    id = Column(Integer, primary_key=True, index=True, autoincrement=True) 
     nome = Column(String, nullable=False)
     email = Column(String, unique=True, nullable=False, index=True)
     senha = Column(String, nullable=False)
@@ -25,7 +25,7 @@ class Produto(Base):
     descricao = Column(Text)
     preco = Column(DECIMAL(10, 2), nullable=False)
     estoque = Column(Integer, nullable=False)
-    imagem = Column(String, nullable=True)  # 🔹 novo campo opcional
+    imagem = Column(String, nullable=True)  
 
     itens = relationship("PedidoItem", back_populates="produto")
 
