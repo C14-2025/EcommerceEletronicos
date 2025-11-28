@@ -89,7 +89,7 @@ Instale as dependências do backend:
 pip install -r backend/requirements.txt
 ```
 ## Instalação do frontend
-Clone o repositório e instale as dependências:
+Instale as dependências do Frontend:
 
 ```bash
 # Instale as dependências
