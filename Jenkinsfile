@@ -11,8 +11,15 @@ pipeline {
         stage('Jobs de Build e Teste') {
             parallel {
 
+                /* ============================
+                   BACKEND
+                ============================ */
                 stage('Backend') {
+                    environment {
+                        DATABASE_URL = "sqlite:///./test.db"
+                    }
                     stages {
+
                         stage('Build Backend') {
                             steps {
                                 echo "Build Backend..."
@@ -37,8 +44,12 @@ pipeline {
                     }
                 }
 
+                /* ============================
+                   FRONTEND
+                ============================ */
                 stage('Frontend') {
                     stages {
+
                         stage('Build Frontend') {
                             steps {
                                 echo "Build Frontend..."
@@ -82,4 +93,3 @@ pipeline {
         }
     }
 }
-

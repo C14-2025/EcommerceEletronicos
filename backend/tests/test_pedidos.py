@@ -3,12 +3,11 @@ import pytest
 from app.database.connect import get_db
 from sqlalchemy import text
 
-
 @pytest.fixture(autouse=True)
 def limpar_banco():
     db = next(get_db())
-    db.execute(text("TRUNCATE pedidos RESTART IDENTITY CASCADE;"))
-    db.execute(text("TRUNCATE usuarios RESTART IDENTITY CASCADE;"))
+    db.execute(text("DELETE FROM pedidos;"))
+    db.execute(text("DELETE FROM usuarios;"))
     db.commit()
     db.close()
 
@@ -24,21 +23,17 @@ def criar_usuario_padrao():
 
 def test_criar_pedido():
     criar_usuario_padrao()
-
     response = client.post("/pedidos/", json={
         "usuario_id": 1,
         "endereco_id": 1,
         "status": "pendente"
     })
-
     assert response.status_code == 201
-    data = response.json()
-    assert data["usuario_id"] == 1
+    assert response.json()["usuario_id"] == 1
 
 
 def test_listar_pedidos():
     criar_usuario_padrao()
-
     client.post("/pedidos/", json={
         "usuario_id": 1,
         "endereco_id": 1,
@@ -52,7 +47,6 @@ def test_listar_pedidos():
 
 def test_buscar_pedido_por_id():
     criar_usuario_padrao()
-
     client.post("/pedidos/", json={
         "usuario_id": 1,
         "endereco_id": 1,
@@ -71,7 +65,6 @@ def test_buscar_pedido_inexistente():
 
 def test_atualizar_pedido():
     criar_usuario_padrao()
-
     client.post("/pedidos/", json={
         "usuario_id": 1,
         "endereco_id": 1,
@@ -85,7 +78,6 @@ def test_atualizar_pedido():
 
 def test_deletar_pedido():
     criar_usuario_padrao()
-
     client.post("/pedidos/", json={
         "usuario_id": 1,
         "endereco_id": 1,
