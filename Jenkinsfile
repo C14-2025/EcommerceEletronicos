@@ -8,19 +8,14 @@ pipeline {
 
     stages {
 
-        stage('Parallel Jobs') {
+        stage('Jobs de Build e Teste') {
             parallel {
 
-                /* ==========================
-                   BACKEND JOBS
-                   ========================== */
-
-                Backend: {
+                stage('Backend') {
                     stages {
-
                         stage('Build Backend') {
                             steps {
-                                echo "Building Backend..."
+                                echo "Build Backend..."
                                 sh """
                                     cd backend
                                     pip install -r requirements.txt
@@ -29,9 +24,9 @@ pipeline {
                             }
                         }
 
-                        stage('Unit Tests Backend') {
+                        stage('Testes Backend') {
                             steps {
-                                echo "Running Backend Tests..."
+                                echo "Backend Tests..."
                                 sh """
                                     cd backend
                                     pip install pytest
@@ -40,18 +35,13 @@ pipeline {
                             }
                         }
                     }
-                },
+                }
 
-                /* ==========================
-                   FRONTEND JOBS
-                   ========================== */
-
-                Frontend: {
+                stage('Frontend') {
                     stages {
-
                         stage('Build Frontend') {
                             steps {
-                                echo "Building Frontend (Django)..."
+                                echo "Build Frontend..."
                                 sh """
                                     cd frontend
                                     pip install -r requirements.txt
@@ -60,9 +50,9 @@ pipeline {
                             }
                         }
 
-                        stage('Unit Tests Frontend') {
+                        stage('Testes Frontend') {
                             steps {
-                                echo "Running Frontend Tests..."
+                                echo "Frontend Tests..."
                                 sh """
                                     cd frontend
                                     pip install -r requirements.txt
@@ -75,23 +65,15 @@ pipeline {
             }
         }
 
-        /* =============================
-           LOG SUMMARY
-           ============================= */
-
         stage('Log Summary') {
             steps {
-                echo "🎉 Todos os builds e testes foram executados."
+                echo "Todos os builds e testes foram executados."
             }
         }
 
-        /* =============================
-           NOTIFICATION
-           ============================= */
-
-        stage('Notify') {
+        stage('Notificacao') {
             steps {
-                echo "📧 Enviando notificação..."
+                echo "Enviando notificação..."
                 sh """
                     cd scripts
                     python send_email.py
