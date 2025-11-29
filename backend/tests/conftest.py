@@ -1,16 +1,27 @@
-# Criado para definição de configs e fixtures 
 import pytest
-from sqlalchemy import text
-from app.database.connect import get_db
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
+from app.database.models import Base
+from app.main import app
 
-# Função que prepara a base de testes
+from fastapi.testclient import TestClient
+
+# Banco de testes SQLite
+TEST_DATABASE_URL = "sqlite:///./test.db"
+
+engine_test = create_engine(TEST_DATABASE_URL, connect_args={"check_same_thread": False})
+TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine_test)
+
+
 @pytest.fixture(autouse=True)
-def limpar_banco():
-    db = next(get_db())
-    # Limpa as tabelas principais e reseta os IDs
-    db.execute(text("TRUNCATE usuarios RESTART IDENTITY CASCADE;"))
-    db.execute(text("TRUNCATE produtos RESTART IDENTITY CASCADE;"))
-    db.execute(text("TRUNCATE pedidos RESTART IDENTITY CASCADE;"))
-    db.commit()
+def setup_database():
+    # recria as tabelas para cada teste
+    Base.metadata.drop_all(bind=engine_test)
+    Base.metadata.create_all(bind=engine_test)
     yield
-    db.close()
+
+
+@pytest.fixture
+def client():
+    Base.metadata.create_all(bind=engine_test)
+    return TestClient(app)
