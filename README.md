@@ -80,6 +80,7 @@ venv\Scripts\activate
 python -m venv venv
 source venv/bin/activate
 ```
+**Obs**: Para evitar conflitos entre as dependências é recomendável criar uma Venv diferente para cada projeto (Backend e Frontend)
 
 ## Instalação do Backend
 Instale as dependências do backend:
@@ -129,7 +130,7 @@ ecommerce/
 Para rodar o backend, basta usar o seguinte comando:
 
 ```bash
-uvicorn app.main:app --reload
+uvicorn app.main:app --reload --host 127.0.0.1 --port 8000
 ```
 
 Acesse a documentação interativa no Swagger:
