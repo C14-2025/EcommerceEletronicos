@@ -1,12 +1,8 @@
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 from app.routes import usuarios, produtos, pedidos, pagamentos, auth, carrinho
-from app.database.connect import engine, Base
 from app.config import IMAGENS_DIR
 import os
-
-# Cria tabelas no banco caso não existam
-Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
 
