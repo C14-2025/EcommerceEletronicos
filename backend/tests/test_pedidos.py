@@ -1,18 +1,6 @@
-from tests import client
 import pytest
-from app.database.connect import get_db
-from sqlalchemy import text
 
-@pytest.fixture(autouse=True)
-def limpar_banco():
-    db = next(get_db())
-    db.execute(text("DELETE FROM pedidos;"))
-    db.execute(text("DELETE FROM usuarios;"))
-    db.commit()
-    db.close()
-
-
-def criar_usuario_padrao():
+def criar_usuario_padrao(client):
     client.post("/usuarios/", json={
         "nome": "User",
         "email": "user@user.com",
@@ -21,19 +9,22 @@ def criar_usuario_padrao():
     })
 
 
-def test_criar_pedido():
-    criar_usuario_padrao()
+def test_criar_pedido(client):
+    criar_usuario_padrao(client)
+
     response = client.post("/pedidos/", json={
         "usuario_id": 1,
         "endereco_id": 1,
         "status": "pendente"
     })
+
     assert response.status_code == 201
     assert response.json()["usuario_id"] == 1
 
 
-def test_listar_pedidos():
-    criar_usuario_padrao()
+def test_listar_pedidos(client):
+    criar_usuario_padrao(client)
+
     client.post("/pedidos/", json={
         "usuario_id": 1,
         "endereco_id": 1,
@@ -45,8 +36,9 @@ def test_listar_pedidos():
     assert len(response.json()) == 1
 
 
-def test_buscar_pedido_por_id():
-    criar_usuario_padrao()
+def test_buscar_pedido_por_id(client):
+    criar_usuario_padrao(client)
+
     client.post("/pedidos/", json={
         "usuario_id": 1,
         "endereco_id": 1,
@@ -58,13 +50,14 @@ def test_buscar_pedido_por_id():
     assert response.json()["id"] == 1
 
 
-def test_buscar_pedido_inexistente():
+def test_buscar_pedido_inexistente(client):
     response = client.get("/pedidos/999")
     assert response.status_code == 404
 
 
-def test_atualizar_pedido():
-    criar_usuario_padrao()
+def test_atualizar_pedido(client):
+    criar_usuario_padrao(client)
+
     client.post("/pedidos/", json={
         "usuario_id": 1,
         "endereco_id": 1,
@@ -76,8 +69,9 @@ def test_atualizar_pedido():
     assert resp.json()["status"] == "enviado"
 
 
-def test_deletar_pedido():
-    criar_usuario_padrao()
+def test_deletar_pedido(client):
+    criar_usuario_padrao(client)
+
     client.post("/pedidos/", json={
         "usuario_id": 1,
         "endereco_id": 1,

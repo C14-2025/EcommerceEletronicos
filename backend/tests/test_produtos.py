@@ -1,21 +1,6 @@
-from fastapi.testclient import TestClient
-from app.main import app
 import pytest
-from app.database.connect import get_db
-from sqlalchemy import text
 
-client = TestClient(app)
-
-@pytest.fixture(autouse=True)
-def limpar_banco():
-    db = next(get_db())
-    db.execute(text("DELETE FROM produtos;"))
-    db.execute(text("DELETE FROM usuarios;"))
-    db.commit()
-    db.close()
-
-
-def criar_admin():
+def criar_admin(client):
     client.post("/usuarios/", json={
         "nome": "Admin",
         "email": "admin@admin.com",
@@ -25,8 +10,8 @@ def criar_admin():
     })
 
 
-def test_criar_produto():
-    criar_admin()
+def test_criar_produto(client):
+    criar_admin(client)
 
     response = client.post("/produtos/?usuario_id=1", data={
         "nome": "Teclado Mecânico",
@@ -41,8 +26,9 @@ def test_criar_produto():
     assert data["estoque"] == 10
 
 
-def test_listar_produtos():
-    criar_admin()
+def test_listar_produtos(client):
+    criar_admin(client)
+
     client.post("/produtos/?usuario_id=1", data={
         "nome": "Mouse Gamer",
         "descricao": "Mouse com 6 botões",
@@ -51,5 +37,6 @@ def test_listar_produtos():
     })
 
     response = client.get("/produtos/")
+    assert response.status_code == 200
     assert len(response.json()) == 1
 

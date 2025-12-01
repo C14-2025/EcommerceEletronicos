@@ -1,9 +1,9 @@
 import pytest
+from fastapi.testclient import TestClient
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from fastapi.testclient import TestClient
-from app.main import app
 from app.database.models import Base
+from app.main import app
 from app.database.connect import get_db
 
 TEST_DATABASE_URL = "sqlite:///./test.db"
@@ -14,10 +14,11 @@ engine_test = create_engine(
 )
 
 TestingSessionLocal = sessionmaker(
-    autocommit=False, autoflush=False, bind=engine_test
+    autocommit=False,
+    autoflush=False,
+    bind=engine_test
 )
 
-# Override da dependency
 def override_get_db():
     db = TestingSessionLocal()
     try:
@@ -25,6 +26,7 @@ def override_get_db():
     finally:
         db.close()
 
+# aplica override globalmente
 app.dependency_overrides[get_db] = override_get_db
 
 
