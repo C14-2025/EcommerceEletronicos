@@ -1,7 +1,6 @@
-from tests import client
+# backend/tests/test_usuarios.py
 
-
-def test_criar_usuario_duplicado():
+def test_criar_usuario_duplicado(client):
     # Cria um usuário inicial
     response1 = client.post("/usuarios/", json={
         "nome": "Donatto",
@@ -22,7 +21,7 @@ def test_criar_usuario_duplicado():
     assert response2.json()["detail"] == "Email já cadastrado"
 
 
-def test_criar_usuario_sem_senha():
+def test_criar_usuario_sem_senha(client):
     response = client.post("/usuarios/", json={
         "nome": "SemSenha",
         "email": "semsenha@email.com",
@@ -32,7 +31,6 @@ def test_criar_usuario_sem_senha():
 
 
 def test_buscar_usuario_existente(client):
-    # cria um usuário
     client.post("/usuarios/", json={
         "nome": "Luiz",
         "email": "luiz@example.com",
@@ -55,8 +53,7 @@ def test_buscar_usuario_inexistente(client):
     assert response.json() == {"detail": "Usuário não encontrado"}
 
 
-def test_criar_usuario_email_invalido():
-    # Note: seu schema NÃO valida email — então status deve ser 201 mesmo
+def test_criar_usuario_email_invalido(client):
     response = client.post("/usuarios/", json={
         "nome": "Teste",
         "email": "email_invalido",
