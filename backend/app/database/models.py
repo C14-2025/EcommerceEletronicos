@@ -7,14 +7,16 @@ from .connect import Base
 class Usuario(Base):
     __tablename__ = "usuarios"
 
-    id = Column(Integer, primary_key=True, index=True, autoincrement=True) 
+    id = Column(Integer, primary_key=True, index=True, autoincrement=True)
     nome = Column(String, nullable=False)
     email = Column(String, unique=True, nullable=False, index=True)
     senha = Column(String, nullable=False)
     telefone = Column(String, nullable=True)
     is_admin = Column(Boolean, default=False)
+    is_vendor = Column(Boolean, default=False)
 
     pedidos = relationship("Pedido", back_populates="usuario")
+
 
 
 class Produto(Base):

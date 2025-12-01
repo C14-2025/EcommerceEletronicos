@@ -44,37 +44,39 @@
           </li>
 
 
-        {% if request.session.usuario.is_admin %}
-        <li>
-          <a href="{% url 'adicionar_produto' %}" class="block py-2 px-3 rounded bg-green-600 hover:bg-green-700 flex items-center gap-3 text-white">
-            <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 5v14M5 12h14"></path></svg>
-            <span x-show="sidebarOpen" x-transition>Adicionar Produto</span>
-          </a>
-        </li>
-        {% endif %}
+        {% if request.session.usuario.is_admin or request.session.usuario.is_vendor %}
+                <li>
+                  <a href="{% url 'adicionar_produto' %}" 
+                    class="block py-2 px-3 rounded bg-green-600 hover:bg-green-700 flex items-center gap-3 text-white">
+                      <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <path d="M12 5v14M5 12h14"></path>
+                      </svg>
+                      <span x-show="sidebarOpen" x-transition>Adicionar Produto</span>
+                  </a>
+                </li>
 
-        {% if request.session.usuario.is_admin %}
-          <li>
-            <a href="{% url 'remover_produto' %}"
-              class="block py-2 px-3 rounded bg-red-600 hover:bg-red-700 flex items-center gap-3 text-white">
-              <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                <path d="M3 6h18M9 6v12m6-12v12M4 6l1 14h14l1-14"></path>
-              </svg>
-              <span x-show="sidebarOpen" x-transition>Remover Produto</span>
-            </a>
-          </li>
-          {% endif %}
+                <li>
+                  <a href="{% url 'remover_produto' %}"
+                    class="block py-2 px-3 rounded bg-red-600 hover:bg-red-700 flex items-center gap-3 text-white">
+                      <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <path d="M3 6h18M9 6v12m6-12v12M4 6l1 14h14l1-14"></path>
+                      </svg>
+                      <span x-show="sidebarOpen" x-transition>Remover Produto</span>
+                  </a>
+                </li>
+                {% endif %}
 
-          <li>
-            <a href="{% url 'admin_usuarios' %}"
-              class="block py-2 px-3 rounded bg-purple-600 hover:bg-purple-700 flex items-center gap-3 text-white">
-              <svg class="h-5 w-5" viewBox="0 0 24 24" stroke="currentColor">
-                <path d="M12 12a5 5 0 100-10 5 5 0 000 10zM3 21a9 9 0 0118 0H3z"/>
-              </svg>
-              <span x-show="sidebarOpen" x-transition>Usuários</span>
-            </a>
-          </li>
-
+                {% if request.session.usuario.is_admin %}
+                <li>
+                  <a href="{% url 'admin_usuarios' %}"
+                    class="block py-2 px-3 rounded bg-purple-600 hover:bg-purple-700 flex items-center gap-3 text-white">
+                      <svg class="h-5 w-5" viewBox="0 0 24 24" stroke="currentColor">
+                        <path d="M12 12a5 5 0 100-10 5 5 0 000 10zM3 21a9 9 0 0118 0H3z"/>
+                      </svg>
+                      <span x-show="sidebarOpen" x-transition>Usuários</span>
+                  </a>
+                </li>
+                {% endif %}
 
       </ul>
     </div>
