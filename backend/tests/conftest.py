@@ -1,3 +1,7 @@
+import sys
+import os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+
 import pytest
 from fastapi.testclient import TestClient
 from sqlalchemy import create_engine
@@ -26,7 +30,7 @@ def override_get_db():
     finally:
         db.close()
 
-# aplica override globalmente
+# Override global do banco
 app.dependency_overrides[get_db] = override_get_db
 
 
