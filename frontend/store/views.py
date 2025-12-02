@@ -26,12 +26,21 @@ def perfil(request):
         "pedidos": pedidos
     })
 
-
 def produtos(request):
+    termo = request.GET.get("q")
     print(">>> ENTROU NA VIEW produtos()")
-    produtos = get("/produtos/")
-    pprint.pprint(produtos)  # Mostra no terminal
-    return render(request, "store/produtos.html", {"produtos": produtos})
+
+    if termo:
+        produtos = get(f"/produtos/?q={termo}")
+    else:
+        produtos = get("/produtos/")
+        pprint.pprint(produtos)
+
+    return render(request, "store/produtos.html", {
+        "produtos": produtos,
+        "q": termo or ""
+    })
+
 
 def produto_detalhes(request, produto_id):
     produto = get(f"/produtos/{produto_id}")
@@ -44,10 +53,20 @@ def produto_detalhes(request, produto_id):
 
 
 def home(request):
+    termo = request.GET.get("q")
     print(">>> ENTROU NA HOME")
-    produtos = get("/produtos/")
-    pprint.pprint(produtos) 
-    return render(request, "store/home.html", {"produtos": produtos})
+
+    if termo:
+        produtos = get(f"/produtos/?q={termo}")
+    else:
+        produtos = get("/produtos/")
+        pprint.pprint(produtos)
+
+    return render(request, "store/home.html", {
+        "produtos": produtos,
+        "q": termo or ""
+    })
+
 
 def carrinho(request):
     usuario = request.session.get("usuario")
@@ -169,8 +188,10 @@ def adicionar_ao_carrinho(request, produto_id):
 @require_http_methods(["GET", "POST"])
 def adicionar_produto_page(request):
     usuario = request.session.get("usuario")
-    if not usuario or not usuario.get("is_admin"):
-        messages.error(request, "Acesso negado: apenas administradores podem adicionar produtos.")
+
+    # Permitir ADMIN ou VENDEDOR
+    if not usuario or not (usuario.get("is_admin") or usuario.get("is_vendor")):
+        messages.error(request, "Acesso negado: apenas administradores ou vendedores podem adicionar produtos.")
         return redirect("home")
 
     if request.method == "POST":
@@ -181,7 +202,6 @@ def adicionar_produto_page(request):
         imagem = request.FILES.get("imagem")
 
         try:
-            # Se tiver imagem, monta um dicionário files; senão, envia só o JSON
             files = {"imagem": imagem} if imagem else None
 
             data = {
@@ -191,11 +211,10 @@ def adicionar_produto_page(request):
                 "estoque": estoque,
             }
 
-            # 🔹 requests.post agora envia multipart (com arquivo)
             resp = requests.post(
                 f"{API_URL}/produtos/?usuario_id={usuario['id']}",
-                data=data,  # dados normais
-                files=files,  # arquivo (se houver)
+                data=data,
+                files=files,
                 timeout=10
             )
 
@@ -211,15 +230,16 @@ def adicionar_produto_page(request):
     return render(request, "store/adicionar_produto.html", {"usuario": usuario})
 
 
+
 @require_http_methods(["GET", "POST"])
 def remover_produto_page(request):
     usuario = request.session.get("usuario")
 
-    if not usuario or not usuario.get("is_admin"):
-        messages.error(request, "Acesso negado: somente administradores podem remover produtos.")
+    # Permitir ADMIN ou VENDEDOR
+    if not usuario or not (usuario.get("is_admin") or usuario.get("is_vendor")):
+        messages.error(request, "Acesso negado: apenas administradores ou vendedores podem remover produtos.")
         return redirect("home")
 
-    # GET → Apenas listar os produtos
     produtos = get("/produtos/")
 
     return render(request, "store/remover_produto.html", {
@@ -228,11 +248,13 @@ def remover_produto_page(request):
     })
 
 
+
 @require_POST
 def remover_produto(request, produto_id):
     usuario = request.session.get("usuario")
 
-    if not usuario or not usuario.get("is_admin"):
+    # Permitir ADMIN ou VENDEDOR
+    if not usuario or not (usuario.get("is_admin") or usuario.get("is_vendor")):
         messages.error(request, "Acesso negado.")
         return redirect("home")
 
@@ -251,5 +273,3 @@ def remover_produto(request, produto_id):
         messages.error(request, f"Erro ao conectar ao servidor: {e}")
 
     return redirect("remover_produto")
-
-
