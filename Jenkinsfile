@@ -15,9 +15,11 @@ pipeline {
                    BACKEND
                 ============================ */
                 stage('Backend') {
+
                     environment {
                         DATABASE_URL = "sqlite:///./test.db"
                     }
+
                     stages {
 
                         stage('Build Backend') {
@@ -34,10 +36,18 @@ pipeline {
                         stage('Testes Backend') {
                             steps {
                                 echo "Backend Tests..."
+
                                 sh """
                                     cd backend
+
+                                    # Garante que o Python encontre o diretório backend/
+                                    export PYTHONPATH=\$PWD
+
+                                    # Reinstala pytest se necessário
                                     pip install pytest
-                                    pytest
+
+                                    # Executa com python -m pytest (correto para Docker)
+                                    python -m pytest -vv
                                 """
                             }
                         }
@@ -48,6 +58,7 @@ pipeline {
                    FRONTEND
                 ============================ */
                 stage('Frontend') {
+
                     stages {
 
                         stage('Build Frontend') {
@@ -93,3 +104,4 @@ pipeline {
         }
     }
 }
+

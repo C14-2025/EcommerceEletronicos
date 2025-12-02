@@ -1,13 +1,24 @@
 {% if request.session.usuario %}
 <!-- Sidebar à esquerda -->
 <div class="z-40">
+
   <!-- Sidebar deslizante -->
   <aside
     class="fixed top-0 left-0 h-full bg-gray-900 text-white p-5 flex flex-col justify-between shadow-lg transform transition-transform duration-300 ease-in-out"
     :class="sidebarOpen ? 'translate-x-0 w-64' : '-translate-x-full w-0 overflow-hidden'"
     style="z-index:40;"
   >
-    <div>
+
+    <!-- BOTÃO FECHAR (X) -->
+    <button @click="sidebarOpen = false"
+            class="absolute top-4 right-4 p-2 rounded-lg hover:bg-gray-700 transition">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M6 18L18 6M6 6l12 12" />
+        </svg>
+    </button>
+
+    <div class="mt-10"> <!-- espaço para não sobrepor o X -->
       <h2 class="text-xl font-bold mb-6" x-show="sidebarOpen" x-transition>
         👤 {{ request.session.usuario.nome }}
       </h2>
@@ -41,43 +52,41 @@
               </svg>
               <span x-show="sidebarOpen" x-transition>Meus Pedidos</span>
             </a>
-          </li>
-
+        </li>
 
         {% if request.session.usuario.is_admin or request.session.usuario.is_vendor %}
-                <li>
-                  <a href="{% url 'adicionar_produto' %}" 
-                    class="block py-2 px-3 rounded bg-green-600 hover:bg-green-700 flex items-center gap-3 text-white">
-                      <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                        <path d="M12 5v14M5 12h14"></path>
-                      </svg>
-                      <span x-show="sidebarOpen" x-transition>Adicionar Produto</span>
-                  </a>
-                </li>
+        <li>
+          <a href="{% url 'adicionar_produto' %}"
+             class="block py-2 px-3 rounded bg-green-600 hover:bg-green-700 flex items-center gap-3 text-white">
+            <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <path d="M12 5v14M5 12h14"></path>
+            </svg>
+            <span x-show="sidebarOpen" x-transition>Adicionar Produto</span>
+          </a>
+        </li>
 
-                <li>
-                  <a href="{% url 'remover_produto' %}"
-                    class="block py-2 px-3 rounded bg-red-600 hover:bg-red-700 flex items-center gap-3 text-white">
-                      <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                        <path d="M3 6h18M9 6v12m6-12v12M4 6l1 14h14l1-14"></path>
-                      </svg>
-                      <span x-show="sidebarOpen" x-transition>Remover Produto</span>
-                  </a>
-                </li>
-                {% endif %}
+        <li>
+          <a href="{% url 'remover_produto' %}"
+             class="block py-2 px-3 rounded bg-red-600 hover:bg-red-700 flex items-center gap-3 text-white">
+            <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <path d="M3 6h18M9 6v12m6-12v12M4 6l1 14h14l1-14"></path>
+            </svg>
+            <span x-show="sidebarOpen" x-transition>Remover Produto</span>
+          </a>
+        </li>
+        {% endif %}
 
-                {% if request.session.usuario.is_admin %}
-                <li>
-                  <a href="{% url 'admin_usuarios' %}"
-                    class="block py-2 px-3 rounded bg-purple-600 hover:bg-purple-700 flex items-center gap-3 text-white">
-                      <svg class="h-5 w-5" viewBox="0 0 24 24" stroke="currentColor">
-                        <path d="M12 12a5 5 0 100-10 5 5 0 000 10zM3 21a9 9 0 0118 0H3z"/>
-                      </svg>
-                      <span x-show="sidebarOpen" x-transition>Usuários</span>
-                  </a>
-                </li>
-                {% endif %}
-
+        {% if request.session.usuario.is_admin %}
+        <li>
+          <a href="{% url 'admin_usuarios' %}"
+             class="block py-2 px-3 rounded bg-purple-600 hover:bg-purple-700 flex items-center gap-3 text-white">
+            <svg class="h-5 w-5" viewBox="0 0 24 24" stroke="currentColor">
+              <path d="M12 12a5 5 0 100-10 5 5 0 000 10zM3 21a9 9 0 0118 0H3z"/>
+            </svg>
+            <span x-show="sidebarOpen" x-transition>Usuários</span>
+          </a>
+        </li>
+        {% endif %}
       </ul>
     </div>
 
@@ -87,8 +96,10 @@
         <span x-show="sidebarOpen" x-transition>Sair</span>
       </a>
     </div>
+
   </aside>
 </div>
 {% endif %}
+
 
 

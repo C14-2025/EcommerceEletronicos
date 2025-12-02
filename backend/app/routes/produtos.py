@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException
 from fastapi import File, UploadFile, Form
 from sqlalchemy.orm import Session
+from sqlalchemy import or_
 from fastapi.responses import JSONResponse
 from typing import List
 import os
@@ -21,8 +22,21 @@ def verificar_admin(usuario_id: int, db: Session):
 
 # Listar todos
 @router.get("/", response_model=List[ProdutoOut])
-def listar_produtos(db: Session = Depends(get_db)):
-    return db.query(Produto).all()
+def listar_produtos(q: str = None, db: Session = Depends(get_db)):
+
+    query = db.query(Produto)
+
+    if q:
+        termo = f"%{q}%"
+        query = query.filter(
+            or_(
+                Produto.nome.ilike(termo),
+                Produto.descricao.ilike(termo)
+            )
+        )
+
+    return query.all()
+
 
 @router.get("/{produto_id}", response_model=ProdutoOut)
 def get_produto(produto_id: int, db: Session = Depends(get_db)):

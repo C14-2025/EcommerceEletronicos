@@ -16,9 +16,44 @@
 
     <form method="post" class="space-y-4">
       {% csrf_token %}
-      {{ form.as_p }}
 
-      <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-lg font-medium transition">
+      <!-- Nome -->
+      <div>
+        <label class="block text-gray-700">Nome</label>
+        <input type="text" name="nome" required
+               class="w-full border rounded-lg p-2 focus:outline-none focus:ring focus:ring-blue-200">
+      </div>
+
+      <!-- Email -->
+      <div>
+        <label class="block text-gray-700">E-mail</label>
+        <input type="email" name="email" required
+               class="w-full border rounded-lg p-2 focus:outline-none focus:ring focus:ring-blue-200">
+      </div>
+
+      <!-- Senha -->
+      <div>
+        <label class="block text-gray-700">Senha</label>
+        <input type="password" name="senha" required
+               class="w-full border rounded-lg p-2 focus:outline-none focus:ring focus:ring-blue-200">
+      </div>
+
+      <!-- Telefone -->
+      <div>
+        <label class="block text-gray-700">Telefone</label>
+        <input type="text" name="telefone"
+               class="w-full border rounded-lg p-2 focus:outline-none focus:ring focus:ring-blue-200">
+      </div>
+
+      <!-- Sou vendedor -->
+      <div class="flex items-center gap-2">
+        <input type="checkbox" name="is_vendor"
+               class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-400">
+        <label class="text-gray-700">Sou vendedor</label>
+      </div>
+
+      <button type="submit"
+              class="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-lg font-medium transition">
         Criar conta
       </button>
     </form>
@@ -30,3 +65,4 @@
   </div>
 </div>
 {% endblock %}
+

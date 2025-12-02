@@ -9,25 +9,49 @@
 <body class="bg-gray-50 text-gray-800" x-data="{ sidebarOpen: false }">
 
     <!-- Navbar fixa no topo -->
-    <nav class="bg-blue-600 text-white p-4 flex justify-center items-center shadow fixed top-0 left-0 right-0 z-30">
-        <!-- Logo central que também abre/fecha a sidebar -->
-        <a href="javascript:void(0)"
-           @click="sidebarOpen = !sidebarOpen"
-           class="font-bold text-lg text-center cursor-pointer hover:text-blue-200 select-none">
-           🛍️ Ecommerce
-        </a>
+    <nav class="bg-blue-600 text-white px-4 py-3 fixed top-0 left-0 right-0 z-30 shadow flex items-center">
 
-        <!-- Área de usuário no canto direito -->
-        <div class="absolute right-4 flex items-center gap-4">
-          {% if request.session.usuario %}
+    <!-- BOTÃO HAMBÚRGUER (ABRIR SIDEBAR) -->
+    <button @click="sidebarOpen = true"
+        class="p-2 hover:bg-blue-700 rounded-lg transition">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M4 6h16M4 12h16M4 18h16" />
+        </svg>
+    </button>
+
+    <!-- LOGO CENTRAL -->
+    <div class="absolute left-1/2 transform -translate-x-1/2">
+        <a href="{% url 'home' %}" class="font-bold text-lg hover:text-blue-200 flex items-center gap-2">
+            🛍️ Ecommerce
+        </a>
+    </div>
+
+    <!-- ÁREA DO USUÁRIO À DIREITA -->
+    <div class="ml-auto flex items-center gap-4">
+
+        {% if request.session.usuario %}
+            <!-- Ícone Carrinho -->
+            <a href="{% url 'carrinho' %}" class="hover:text-blue-200">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13l-2 9m12-9l2 9m-6-9v9" />
+                </svg>
+            </a>
+
             <span class="hidden sm:inline">Bem-vindo, {{ request.session.usuario.nome }}</span>
-            <a href="{% url 'logout' %}" class="hover:underline ml-2">Sair</a>
-          {% else %}
+            <a href="{% url 'logout' %}" class="hover:underline">Sair</a>
+
+        {% else %}
             <a href="{% url 'login' %}" class="hover:underline">Entrar</a>
             <a href="{% url 'signup' %}" class="hover:underline">Cadastrar</a>
-          {% endif %}
-        </div>
-    </nav>
+        {% endif %}
+
+    </div>
+
+</nav>
+
+
 
     {% include "components/sidebar.html" %}
 
