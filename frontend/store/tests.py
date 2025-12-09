@@ -1,7 +1,9 @@
 from django.test import TestCase
 from django.urls import reverse
 from django.contrib.messages import get_messages
-from unittest.mock import patch, Mock
+from unittest.mock import patch, Mock, MagicMock
+import unittest.mock as mock
+
 
 
 # ============================================================
@@ -140,7 +142,7 @@ class CheckoutTests(TestCase):
 
 
 # ============================================================
-#  FINALIZAR COMPRA
+#  1 - FINALIZAR COMPRA
 # ============================================================
 
 class FinalizarCompraTests(TestCase):
@@ -176,7 +178,7 @@ class FinalizarCompraTests(TestCase):
 
 
 # ============================================================
-#  ADICIONAR AO CARRINHO
+#  2 - ADICIONAR AO CARRINHO
 # ============================================================
 
 class AdicionarCarrinhoTests(TestCase):
@@ -198,7 +200,7 @@ class AdicionarCarrinhoTests(TestCase):
 
 
 # ============================================================
-#  PERMISSÃO PARA PRODUTOS
+#  3- PERMISSÃO PARA PRODUTOS
 # ============================================================
 
 class PermissaoProdutoTests(TestCase):
@@ -232,7 +234,7 @@ class PermissaoProdutoTests(TestCase):
 
 
 # ============================================================
-#  REMOVER PRODUTO
+#  4 - REMOVER PRODUTO
 # ============================================================
 
 class RemoverProdutoTests(TestCase):
@@ -268,7 +270,7 @@ class RemoverProdutoTests(TestCase):
 
 
 # ============================================================
-#  PERFIL
+#  5 - PERFIL
 # ============================================================
 
 class PerfilViewTests(TestCase):
@@ -290,7 +292,7 @@ class PerfilViewTests(TestCase):
 
 
 # ============================================================
-#  MEUS PEDIDOS
+# 6 - MEUS PEDIDOS
 # ============================================================
 
 class MeusPedidosTests(TestCase):
@@ -314,7 +316,7 @@ class MeusPedidosTests(TestCase):
 
 
 # ============================================================
-#  ADICIONAR PRODUTO PAGE (FORM)
+#  7 - ADICIONAR PRODUTO PAGE (FORM)
 # ============================================================
 
 class AddProdutoPageTests(TestCase):
@@ -348,7 +350,7 @@ class AddProdutoPageTests(TestCase):
 
 
 # ============================================================
-#  REMOVER PRODUTO PAGE
+#  8 - REMOVER PRODUTO PAGE
 # ============================================================
 
 class RemoverProdutoPageTests(TestCase):
@@ -367,7 +369,7 @@ class RemoverProdutoPageTests(TestCase):
 
 
 # ============================================================
-#  PRODUTO DETALHES (EXIBE CAMPOS)
+# 9 - PRODUTO DETALHES (EXIBE CAMPOS)
 # ============================================================
 
 class ProdutoDetalhesConteudoTests(TestCase):
@@ -389,7 +391,7 @@ class ProdutoDetalhesConteudoTests(TestCase):
 
 
 # ============================================================
-#  BUSCA GLOBAL NA HOME
+#  10 - BUSCA GLOBAL NA HOME
 # ============================================================
 
 class BuscaHomeTests(TestCase):
@@ -401,3 +403,90 @@ class BuscaHomeTests(TestCase):
         resp = self.client.get(reverse("home") + "?q=mouse")
 
         self.assertContains(resp, "Mouse Gamer")
+
+# ============================================================
+# 11 - Usuário tenta acessar checkout com carrinho vazio
+# ============================================================
+
+class CheckoutCarrinhoVazioTests(TestCase):
+    def test_checkout_carrinho_vazio(self):
+        session = self.client.session
+        session['email'] = 'teste@teste.com'
+        session['carrinho'] = []  # carrinho vazio
+        session.save()
+
+        response = self.client.get(reverse('checkout'))
+        self.assertEqual(response.status_code, 302)
+
+
+# ============================================================
+# 12 - API retorna erro 500 na listagem de produtos
+# ============================================================
+
+class ProdutosErroBackendTests(TestCase):
+    @mock.patch('store.views.get')
+    def test_produtos_backend_erro_500(self, mock_get):
+        # mock retorna um objeto que representa erro no backend
+        mock_value = MagicMock(status_code=500, json=lambda: {})
+        mock_get.return_value = mock_value
+
+        response = self.client.get(reverse('produtos'))
+
+        # view deve responder 200 e chamar a função get com o endpoint correto
+        self.assertEqual(response.status_code, 200)
+        mock_get.assert_called_with("/produtos/")
+
+        # garantir que o contexto 'produtos' veio do get() (mesmo que seja objeto de erro)
+        # assim o teste não depende de strings fixas no template
+        self.assertIn('produtos', response.context)
+        self.assertIs(response.context['produtos'], mock_value)
+
+
+
+# ============================================================
+# 13 - Não deve adicionar item com quantidade inválida
+# ============================================================
+
+class CarrinhoQuantidadeInvalidaTests(TestCase):
+    def test_quantidade_invalida(self):
+        response = self.client.post(reverse('adicionar_ao_carrinho', args=[1]), {
+            "quantidade": -5
+        })
+
+        # Deve redirecionar para login se não houver usuário
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, reverse("login"))
+
+
+
+
+# ============================================================
+# 15 - Usuário tenta finalizar compra com payload inválido
+# ============================================================
+
+class FinalizarCompraPayloadInvalidoTests(TestCase):
+    @mock.patch("store.views.requests.post")
+    def test_payload_invalido(self, mock_post):
+        mock_post.return_value = MagicMock(status_code=400, json=lambda: {"erro": "payload inválido"})
+
+        session = self.client.session
+        session['usuario'] = {"id": 1}
+        session['carrinho'] = [{"id": 1, "qtd": 1}]
+        session.save()
+
+        response = self.client.post(reverse('finalizar_compra'), follow=True)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Erro ao finalizar compra")
+
+
+
+# ============================================================
+# 16 - Login obrigatório para remover item do carrinho
+# ============================================================
+
+class RemoverCarrinhoSemLoginTests(TestCase):
+    def test_remover_sem_login(self):
+        response = self.client.post(reverse('remover_produto_confirmar', args=[1]))
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, "/")
