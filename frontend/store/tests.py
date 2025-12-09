@@ -265,3 +265,139 @@ class RemoverProdutoTests(TestCase):
         resp = self.client.post(reverse("remover_produto_confirmar", args=[10]), follow=True)
 
         self.assertContains(resp, "Erro ao remover produto")
+
+
+# ============================================================
+#  PERFIL
+# ============================================================
+
+class PerfilViewTests(TestCase):
+
+    def test_perfil_sem_login(self):
+        resp = self.client.get(reverse("perfil"), follow=True)
+        self.assertContains(resp, "Você precisa estar logado")
+
+    @patch("store.views.get")
+    def test_perfil_logado(self, mock_get):
+        mock_get.return_value = []
+        session = self.client.session
+        session["usuario"] = {"id": 1, "nome": "Luiz"}
+        session.save()
+
+        resp = self.client.get(reverse("perfil"))
+        self.assertEqual(resp.status_code, 200)
+        self.assertContains(resp, "Luiz")
+
+
+# ============================================================
+#  MEUS PEDIDOS
+# ============================================================
+
+class MeusPedidosTests(TestCase):
+
+    def test_meus_pedidos_sem_login(self):
+        resp = self.client.get(reverse("meus_pedidos"), follow=True)
+        self.assertContains(resp, "Você precisa estar logado")
+
+    @patch("store.views.get")
+    def test_meus_pedidos_logado(self, mock_get):
+        mock_get.return_value = [
+            {"id": 1, "total": 100}
+        ]
+
+        session = self.client.session
+        session["usuario"] = {"id": 1, "nome": "Cliente"}
+        session.save()
+
+        resp = self.client.get(reverse("meus_pedidos"))
+        self.assertContains(resp, "100")
+
+
+# ============================================================
+#  ADICIONAR PRODUTO PAGE (FORM)
+# ============================================================
+
+class AddProdutoPageTests(TestCase):
+
+    def test_adicionar_produto_form_renderiza(self):
+        session = self.client.session
+        session["usuario"] = {"id": 10, "is_admin": True}
+        session.save()
+
+        resp = self.client.get(reverse("adicionar_produto"))
+        self.assertContains(resp, "Adicionar Produto")
+
+    @patch("store.views.requests.post")
+    def test_adicionar_produto_post_sucesso(self, mock_post):
+        session = self.client.session
+        session["usuario"] = {"id": 1, "is_vendor": True}
+        session.save()
+
+        mock_resp = Mock()
+        mock_resp.status_code = 201
+        mock_post.return_value = mock_resp
+
+        resp = self.client.post(reverse("adicionar_produto"), {
+            "nome": "Teste",
+            "descricao": "Desc",
+            "preco": "50",
+            "estoque": "10"
+        }, follow=True)
+
+        self.assertContains(resp, "adicionado com sucesso")
+
+
+# ============================================================
+#  REMOVER PRODUTO PAGE
+# ============================================================
+
+class RemoverProdutoPageTests(TestCase):
+
+    @patch("store.views.get")
+    def test_remover_produto_renderiza_lista(self, mock_get):
+        mock_get.return_value = [{"id": 5, "nome": "Produto X"}]
+
+        session = self.client.session
+        session["usuario"] = {"id": 1, "is_admin": True}
+        session.save()
+
+        resp = self.client.get(reverse("remover_produto"))
+
+        self.assertContains(resp, "Produto X")
+
+
+# ============================================================
+#  PRODUTO DETALHES (EXIBE CAMPOS)
+# ============================================================
+
+class ProdutoDetalhesConteudoTests(TestCase):
+
+    @patch("store.views.get")
+    def test_detalhes_exibe_informacoes(self, mock_get):
+        mock_get.return_value = {
+            "id": 1,
+            "nome": "GPU X",
+            "descricao": "Muito rápida",
+            "preco": 3999
+        }
+
+        resp = self.client.get(reverse("produto_detalhes", args=[1]))
+
+        self.assertContains(resp, "GPU X")
+        self.assertContains(resp, "Muito rápida")
+        self.assertContains(resp, "3999")
+
+
+# ============================================================
+#  BUSCA GLOBAL NA HOME
+# ============================================================
+
+class BuscaHomeTests(TestCase):
+
+    @patch("store.views.get")
+    def test_busca_renderiza_resultado(self, mock_get):
+        mock_get.return_value = [{"id": 1, "nome": "Mouse Gamer"}]
+
+        resp = self.client.get(reverse("home") + "?q=mouse")
+
+        self.assertContains(resp, "Mouse Gamer")
